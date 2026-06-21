@@ -1,14 +1,10 @@
-"use client";
-
-import Header from "./shared/components/Header";
-import Footer from "./shared/components/Footer";
-import WhatsAppButton from "./shared/components/WhatsAppButton";
-import HeroSection from "./features/home/HeroSection";
-import SegurosSection from "./features/seguros/SegurosSection";
-import TramitesLegalesSection from "./features/tramites-legales/TramitesLegalesSection";
-import MantenimientoSection from "./features/mantenimiento/MantenimientoSection";
-import CompraVentaSection from "./features/compra-venta/CompraVentaSection";
-import RepresentanteLegalSection from "./features/representante-legal/RepresentanteLegalSection";
+import { Header, Footer, WhatsAppButton } from "@shared/components";
+import { HeroSection } from "@features/home";
+import { SegurosSection } from "@features/seguros";
+import { TramitesLegalesSection } from "@features/tramites-legales";
+import { MantenimientoSection } from "@features/mantenimiento";
+import { CompraVentaSection } from "@features/compra-venta";
+import { RepresentanteLegalSection } from "@features/representante-legal";
 
 export default function Home() {
   return (

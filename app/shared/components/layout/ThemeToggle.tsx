@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme } from "../hooks/useTheme";
+import { useTheme } from "@shared/hooks";
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -10,7 +10,8 @@ export default function ThemeToggle() {
       onClick={toggleTheme}
       className="relative w-14 h-7 rounded-full transition-colors duration-300 cursor-pointer"
       style={{
-        backgroundColor: theme === "dark" ? "var(--primary)" : "var(--border-color)",
+        backgroundColor:
+          theme === "dark" ? "var(--primary)" : "var(--border-color)",
       }}
       aria-label="Cambiar tema"
     >

@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@features/*": ["./app/features/*"],
+      "@shared/*": ["./app/shared/*"]
     }
   },
   "include": [

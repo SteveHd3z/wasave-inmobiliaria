@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "./shared/hooks/useTheme";
+import { ThemeProvider } from "@shared/hooks";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",

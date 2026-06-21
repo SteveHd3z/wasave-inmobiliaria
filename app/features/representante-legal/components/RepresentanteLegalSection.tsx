@@ -1,26 +1,24 @@
 "use client";
 
-import { useTheme } from "../../shared/hooks/useTheme";
+import { SectionHeader } from "@shared/components/ui";
+import { useTheme } from "@shared/hooks";
+import { CONTACT_INFO } from "@shared/constants";
+import { REPRESENTANTE_DATA } from "../constants";
 
 export default function RepresentanteLegalSection() {
   const { theme } = useTheme();
+
   return (
-    <section id="representante" className="py-20 px-4" style={{ backgroundColor: theme === "dark" ? "var(--background)" : "var(--surface)" }}>
+    <section
+      id="representante"
+      className="py-20 px-4"
+      style={{
+        backgroundColor:
+          theme === "dark" ? "var(--background)" : "var(--surface)",
+      }}
+    >
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <span
-            className="text-sm font-bold uppercase tracking-widest"
-            style={{ color: "var(--primary)" }}
-          >
-            Nosotros
-          </span>
-          <h2
-            className="text-3xl sm:text-4xl font-bold mt-2"
-            style={{ color: "var(--foreground)" }}
-          >
-            Representante Legal
-          </h2>
-        </div>
+        <SectionHeader label="Nosotros" title="Representante Legal" />
 
         <div
           className="rounded-2xl p-8 md:p-12 border"
@@ -37,7 +35,9 @@ export default function RepresentanteLegalSection() {
                   "linear-gradient(135deg, var(--primary), var(--primary-dark))",
               }}
             >
-              <span className="text-6xl text-white font-bold">WS</span>
+              <span className="text-6xl text-white font-bold">
+                {REPRESENTANTE_DATA.iniciales}
+              </span>
             </div>
 
             <div className="text-center md:text-left">
@@ -45,42 +45,34 @@ export default function RepresentanteLegalSection() {
                 className="text-2xl font-bold mb-1"
                 style={{ color: "var(--foreground)" }}
               >
-                Walter Salazar
+                {REPRESENTANTE_DATA.nombre}
               </h3>
               <p
                 className="font-semibold mb-4"
                 style={{ color: "var(--primary)" }}
               >
-                Representante Legal - Wasave Inmobiliaria
+                {REPRESENTANTE_DATA.cargo}
               </p>
 
               <div className="space-y-2" style={{ color: "var(--muted)" }}>
-                <p>
-                  Profesional en administración de empresas con especialización
-                  en bienes raíces y derecho inmobiliario. Cuenta con más de 15
-                  años de experiencia en el sector inmobiliario del suroccidente
-                  colombiano.
-                </p>
-                <p>
-                  Bajo su liderazgo, Wasave Inmobiliaria se ha consolidado como
-                  una empresa confiable y transparente, brindando soluciones
-                  integrales a familias y empresas en la región.
-                </p>
+                {REPRESENTANTE_DATA.biografia.map((parrafo, idx) => (
+                  <p key={idx}>{parrafo}</p>
+                ))}
               </div>
 
               <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                 <a
-                  href="tel:+573147448237"
+                  href={`tel:${CONTACT_INFO.phoneLink}`}
                   className="px-6 py-2 rounded-full font-semibold text-sm border transition-all hover:opacity-80"
                   style={{
                     borderColor: "var(--primary)",
                     color: "var(--primary)",
                   }}
                 >
-                  📞 314 744 8237
+                  📞 {CONTACT_INFO.phone}
                 </a>
                 <a
-                  href="mailto:wasaveinmobiliaria@gmail.com"
+                  href={`mailto:${CONTACT_INFO.email}`}
                   className="px-6 py-2 rounded-full font-semibold text-sm border transition-all hover:opacity-80"
                   style={{
                     borderColor: "var(--primary)",

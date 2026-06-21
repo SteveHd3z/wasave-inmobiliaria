@@ -1,5 +1,9 @@
+"use client";
+
 import Image from "next/image";
-import { useTheme } from "../../shared/hooks/useTheme";
+import { useTheme } from "@shared/hooks";
+import { COMPANY_NAME, COMPANY_TAGLINE } from "@shared/constants";
+import { HERO_LINKS } from "../constants";
 
 export default function HeroSection() {
   const { theme } = useTheme();
@@ -27,7 +31,7 @@ export default function HeroSection() {
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
         <Image
           src="/images/logo.png"
-          alt="Wasave Logo"
+          alt={`${COMPANY_NAME} Logo`}
           width={120}
           height={120}
           className="mx-auto mb-6 drop-shadow-2xl"
@@ -37,41 +41,54 @@ export default function HeroSection() {
           className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight"
           style={{ color: theme === "dark" ? "#ffffff" : "#0F1117" }}
         >
-          Wasave Inmobiliaria
+          {COMPANY_NAME}
         </h1>
 
         <p
           className="text-lg sm:text-xl mb-8 max-w-2xl mx-auto"
-          style={{ color: theme === "dark" ? "rgba(255, 255, 255, 0.9)" : "rgba(15, 17, 23, 0.8)" }}
+          style={{
+            color:
+              theme === "dark"
+                ? "rgba(255, 255, 255, 0.9)"
+                : "rgba(15, 17, 23, 0.8)",
+          }}
         >
-          Soluciones inmobiliarias integrales para tu tranquilidad. Seguros,
-          trámites legales, mantenimiento y asesoría en compra y venta de
-          propiedades.
+          {COMPANY_TAGLINE} para tu tranquilidad. Seguros, trámites legales,
+          mantenimiento y asesoría en compra y venta de propiedades.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="#compra-venta"
-            className="px-8 py-3 rounded-full font-bold text-lg transition-all hover:scale-105 shadow-lg"
-            style={{
-              backgroundColor: theme === "dark" ? "var(--surface)" : "var(--foreground)",
-              color: theme === "dark" ? "var(--primary)" : "var(--surface)",
-            }}
-          >
-            Explorar Propiedades
-          </a>
-          <a
-            href="https://wa.me/573147448237"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-8 py-3 rounded-full font-bold text-lg border-2 transition-all hover:bg-white/10"
-            style={{
-              borderColor: theme === "dark" ? "white" : "#0F1117",
-              color: theme === "dark" ? "white" : "#0F1117",
-            }}
-          >
-            Contáctenos
-          </a>
+          {HERO_LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              target={link.href.startsWith("http") ? "_blank" : undefined}
+              rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+              className="px-8 py-3 rounded-full font-bold text-lg transition-all hover:scale-105 shadow-lg"
+              style={{
+                backgroundColor:
+                  link.variant === "primary"
+                    ? theme === "dark"
+                      ? "var(--surface)"
+                      : "var(--foreground)"
+                    : "transparent",
+                color:
+                  link.variant === "primary"
+                    ? theme === "dark"
+                      ? "var(--primary)"
+                      : "var(--surface)"
+                    : theme === "dark"
+                      ? "white"
+                      : "#0F1117",
+                border:
+                  link.variant === "outline"
+                    ? `2px solid ${theme === "dark" ? "white" : "#0F1117"}`
+                    : "none",
+              }}
+            >
+              {link.label}
+            </a>
+          ))}
         </div>
       </div>
 

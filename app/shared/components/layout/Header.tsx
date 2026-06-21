@@ -1,17 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useTheme } from "../hooks/useTheme";
-import ThemeToggle from "./ThemeToggle";
-
-const navItems = [
-  { label: "Inicio", href: "#inicio" },
-  { label: "Seguros", href: "#seguros" },
-  { label: "Trámites", href: "#tramites" },
-  { label: "Mantenimiento", href: "#mantenimiento" },
-  { label: "Compra y Venta", href: "#compra-venta" },
-  { label: "Representante", href: "#representante" },
-];
+import { useTheme } from "@shared/hooks";
+import { ThemeToggle } from "@shared/components/layout";
+import { NAV_ITEMS, COMPANY_NAME } from "@shared/constants";
 
 export default function Header() {
   const { theme } = useTheme();
@@ -32,20 +24,20 @@ export default function Header() {
           <a href="#inicio" className="flex items-center gap-3">
             <Image
               src="/images/logo.png"
-              alt="Wasave Logo"
+              alt={`${COMPANY_NAME} Logo`}
               width={40}
               height={40}
             />
             <Image
-              src="/images/nombre.png"
-              alt="Wasave Inmobiliaria"
+              src={theme === "dark" ? "/images/nombre_oscuro2png.png" : "/images/nombre-claro.png"}
+              alt={COMPANY_NAME}
               width={140}
               height={30}
             />
           </a>
 
           <nav className="hidden lg:flex items-center gap-1">
-            {navItems.map((item) => (
+            {NAV_ITEMS.map((item) => (
               <a
                 key={item.href}
                 href={item.href}

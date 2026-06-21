@@ -1,12 +1,15 @@
+import { getWhatsappLink } from "@shared/utils";
+import { CONTACT_INFO } from "@shared/constants";
+
 export default function WhatsAppButton() {
   return (
     <a
-      href="https://wa.me/573147448237?text=Hola%2C%20quiero%20más%20información%20sobre%20sus%20servicios"
+      href={getWhatsappLink()}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110"
       style={{ backgroundColor: "#25D366" }}
-      aria-label="Contactar por WhatsApp"
+      aria-label={`Contactar por WhatsApp a ${CONTACT_INFO.name}`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
