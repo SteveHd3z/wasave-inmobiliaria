@@ -23,6 +23,7 @@
   --surface: #F8F9FA;
   --muted: #57606A;
   --border-color: #D0D7DE;
+  --header-bg: rgba(255, 255, 255, 0.95);
 }
 
 .dark {
@@ -35,6 +36,7 @@
   --surface: #161B22;
   --muted: #8B949E;
   --border-color: #30363D;
+  --header-bg: rgba(13, 17, 23, 0.95);
 }
 
 body {

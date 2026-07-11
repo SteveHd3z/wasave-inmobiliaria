@@ -12,11 +12,8 @@ export default function Header() {
     <header
       className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b"
       style={{
-        backgroundColor:
-          theme === "dark"
-            ? "rgba(13, 17, 23, 0.95)"
-            : "rgba(255, 255, 255, 0.95)",
-        borderColor: theme === "dark" ? "var(--border-color)" : "#D0D7DE",
+        backgroundColor: "var(--header-bg)",
+        borderColor: "var(--border-color)",
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

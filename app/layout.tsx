@@ -12,7 +12,7 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Wasave Inmobiliaria",
   description:
-    "Soluciones inmobiliarias integrales: seguros, trámites legales, mantenimiento, compra y venta de propiedades.",
+    "Soluciones inmobiliarias integrales: seguros, servicios, mantenimiento, compra y venta de propiedades.",
 };
 
 export default function RootLayout({
@@ -27,6 +27,16 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'dark') document.documentElement.classList.add('dark');
+              } catch (e) {}
+            `,
+          }}
+        />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

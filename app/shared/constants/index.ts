@@ -15,7 +15,7 @@ export const WHATSAPP_MESSAGE_DEFAULT =
 export const NAV_ITEMS: NavItem[] = [
   { label: "Inicio", href: "#inicio" },
   { label: "Seguros", href: "#seguros" },
-  { label: "Trámites", href: "#tramites" },
+  { label: "Servicios", href: "#servicios" },
   { label: "Mantenimiento", href: "#mantenimiento" },
   { label: "Compra y Venta", href: "#compra-venta" },
   { label: "Representante", href: "#representante" },

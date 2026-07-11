@@ -23,22 +23,56 @@ export default function SegurosSection() {
           description="Protegemos su patrimonio con las mejores coberturas del mercado. Trabajamos con las aseguradoras más confiables del país."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 w-full mx-auto">
           {SEGUROS_DATA.map((seguro) => (
-            <Card key={seguro.titulo} padding="lg">
-              <div className="text-5xl mb-4">{seguro.icono}</div>
-              <h3
-                className="text-xl font-bold mb-3"
-                style={{ color: "var(--foreground)" }}
-              >
-                {seguro.titulo}
-              </h3>
-              <p style={{ color: "var(--muted)" }}>{seguro.descripcion}</p>
+            <Card key={seguro.titulo} padding="lg" hover={false}>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="text-5xl">{seguro.icono}</div>
+                <div>
+                  <h3
+                    className="text-2xl font-bold"
+                    style={{ color: "var(--foreground)" }}
+                  >
+                    {seguro.titulo}
+                  </h3>
+                  <p className="mt-1" style={{ color: "var(--muted)" }}>
+                    {seguro.descripcion}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                {seguro.coberturas.map((cobertura) => (
+                  <Card
+                    key={cobertura.titulo}
+                    padding="sm"
+                    hover={false}
+                    className="flex items-center gap-3"
+                  >
+                    <span className="text-2xl">{cobertura.icono}</span>
+                    <div>
+                      <p
+                        className="font-semibold text-sm"
+                        style={{ color: "var(--foreground)" }}
+                      >
+                        {cobertura.titulo}
+                      </p>
+                      <p
+                        className="text-xs mt-0.5"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        {cobertura.descripcion}
+                      </p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+
               <a
                 href={SEGUROS_WHATSAPP_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block mt-4 font-semibold transition-colors hover:opacity-80"
+                className="inline-block font-semibold transition-colors hover:opacity-80"
                 style={{ color: "var(--primary)" }}
               >
                 Solicitar información →

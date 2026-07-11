@@ -5,20 +5,35 @@ export const SEGUROS_DATA: Seguro[] = [
   {
     titulo: "Seguro de Vivienda",
     descripcion:
-      "Protección completa contra daños por incendio, robo, desastres naturales y responsabilidad civil.",
+      "Protección completa para su hogar con las mejores coberturas del mercado.",
     icono: "🏠",
-  },
-  {
-    titulo: "Seguro de Arrendamiento",
-    descripcion:
-      "Cobertura para arrendadores y arrendatarios ante impagos, daños al inmueble y desalojos.",
-    icono: "📋",
-  },
-  {
-    titulo: "Seguro de Título",
-    descripcion:
-      "Garantía jurídica que protege su inversión ante vicios ocultos o problemas de titularidad.",
-    icono: "🔒",
+    coberturas: [
+      {
+        titulo: "Daños Estructurales",
+        descripcion: "Protección ante daños en paredes, techos, columnas y cimientos.",
+        icono: "🏗️",
+      },
+      {
+        titulo: "Incendio",
+        descripcion: "Cobertura total contra daños por fuego.",
+        icono: "🔥",
+      },
+      {
+        titulo: "Inundaciones",
+        descripcion: "Respaldo ante daños por lluvias torrenciales y desbordes.",
+        icono: "🌊",
+      },
+      {
+        titulo: "Daños Eléctricos",
+        descripcion: "Protección contra cortocircuitos, sobrecargas y daños en instalaciones eléctricas.",
+        icono: "⚡",
+      },
+      {
+        titulo: "Plomería",
+        descripcion: "Cobertura para fugas, roturas de tuberías y daños por agua.",
+        icono: "🔧",
+      },
+    ],
   },
 ];
 

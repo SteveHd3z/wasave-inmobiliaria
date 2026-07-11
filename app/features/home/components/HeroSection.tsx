@@ -53,7 +53,7 @@ export default function HeroSection() {
                 : "rgba(15, 17, 23, 0.8)",
           }}
         >
-          {COMPANY_TAGLINE} para tu tranquilidad. Seguros, trámites legales,
+          {COMPANY_TAGLINE} para tu tranquilidad. Seguros, servicios,
           mantenimiento y asesoría en compra y venta de propiedades.
         </p>
 

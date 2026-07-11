@@ -4,7 +4,7 @@ export const MANTENIMIENTO_DATA: ServicioMantenimiento[] = [
   {
     titulo: "Mantenimiento Preventivo",
     descripcion:
-      "Inspecciones periódicas de sistemas eléctricos, hidráulicos, estructurales y de climatización para prevenir averías.",
+      "Inspecciones periódicas de sistemas eléctricos, hidráulicos, estructurales, climatización y aguas residuales para prevenir averías.",
     icono: "🔧",
   },
   {
