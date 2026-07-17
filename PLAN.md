@@ -303,12 +303,12 @@ NOTA PARA EL USUARIO: Ejecutar este script en Supabase > SQL Editor despues de h
 
 ## FASE 2: FEATURE - PROPIETARIOS (OWNER)
 
-### Tarea 2.1 - API y tipos TypeScript para owner     ok
+### Tarea 2.1 - Tipos TypeScript para owner     OK
 
 **Prompt para el agente de IA:**
 
 ```
-TAREA 2.1: Crear el feature owner con tipos TypeScript y funciones de acceso a datos.
+TAREA 2.1: Crear el feature owner con tipos TypeScript.
 
 CONTEXTO:
 - Proyecto Next.js 16 con App Router, TypeScript estricto
@@ -316,6 +316,7 @@ CONTEXTO:
 - Cliente Supabase ya configurado en app/shared/utils/supabase/
 - Base de datos creada con tabla owner (owner_id, document_id, name, email, phone)
 - Path aliases: @features/* -> ./app/features/*, @shared/* -> ./app/shared/*
+- ARQUITECTURA SIMPLIFICADA: No se usan API Routes ni servicios. Las llamadas a Supabase se hacen directamente desde los componentes/páginas.
 
 INSTRUCCIONES:
 1. Crear app/features/owner/types/index.ts:
@@ -323,27 +324,14 @@ INSTRUCCIONES:
    - Interface CreateOwnerInput { document_id?: string; name: string; email?: string; phone?: string; }
    - Interface UpdateOwnerInput { document_id?: string; name?: string; email?: string; phone?: string; }
 
-2. Crear app/features/owner/services/index.ts:
-   - Funcion getOwners(): Promise<Owner[]> que consulte Supabase (SELECT * FROM owner ORDER BY name)
-   - Funcion getOwnerById(id: string): Promise<Owner | null>
-   - Funcion createOwner(data: CreateOwnerInput): Promise<Owner>
-   - Funcion updateOwner(id: string, data: UpdateOwnerInput): Promise<Owner>
-   - Funcion deleteOwner(id: string): Promise<void>
+2. Crear app/features/owner/index.ts como barrel export de types
 
-3. Crear Route Handlers en app/api/owners/:
-   - app/api/owners/route.ts: GET y POST
-   - app/api/owners/[id]/route.ts: GET, PUT, DELETE
-
-4. Crear app/features/owner/index.ts como barrel export de types, services
-
-5. Ejecutar npm run build para verificar compilacion exitosa
+3. Ejecutar npm run build para verificar compilacion exitosa
 
 RESTRICCIONES:
 - No agregar comentarios al codigo
-- Usar el cliente Supabase del browser (client.ts) para las consultas
+- No crear API Routes ni servicios - las llamadas a Supabase se hacen directamente desde los componentes
 - Seguir convenciones existentes del proyecto
-- Los POST/PUT/DELETE deben requerir autenticacion (verificar si hay sesion Supabase)
-- Retornar codigos HTTP apropiados (200, 201, 400, 404, 500)
 
 VERIFICACION:
 - npm run build sin errores
@@ -354,12 +342,12 @@ VERIFICACION:
 
 ## FASE 3: FEATURE - CLIENTES (CLIENT)
 
-### Tarea 3.1 - API y tipos TypeScript para client       ok
+### Tarea 3.1 - Tipos TypeScript para client       OK
 
 **Prompt para el agente de IA:**
 
 ```
-TAREA 3.1: Crear el feature client con tipos TypeScript y funciones de acceso a datos.
+TAREA 3.1: Crear el feature client con tipos TypeScript.
 
 CONTEXTO:
 - Proyecto Next.js 16 con App Router, TypeScript estricto
@@ -367,6 +355,7 @@ CONTEXTO:
 - Cliente Supabase ya configurado en app/shared/utils/supabase/
 - Base de datos creada con tabla client (client_id, document_id, name, last_name, email, phone)
 - Path aliases: @features/* -> ./app/features/*, @shared/* -> ./app/shared/*
+- ARQUITECTURA SIMPLIFICADA: No se usan API Routes ni servicios. Las llamadas a Supabase se hacen directamente desde los componentes/páginas.
 
 INSTRUCCIONES:
 1. Crear app/features/client/types/index.ts:
@@ -374,27 +363,14 @@ INSTRUCCIONES:
    - Interface CreateClientInput { document_id?: string; name: string; last_name?: string; email?: string; phone?: string; }
    - Interface UpdateClientInput { document_id?: string; name?: string; last_name?: string; email?: string; phone?: string; }
 
-2. Crear app/features/client/services/index.ts:
-   - Funcion getClients(): Promise<Client[]> que consulte Supabase (SELECT * FROM client ORDER BY name)
-   - Funcion getClientById(id: string): Promise<Client | null>
-   - Funcion createClient(data: CreateClientInput): Promise<Client>
-   - Funcion updateClient(id: string, data: UpdateClientInput): Promise<Client>
-   - Funcion deleteClient(id: string): Promise<void>
+2. Crear app/features/client/index.ts como barrel export de types
 
-3. Crear Route Handlers en app/api/clients/:
-   - app/api/clients/route.ts: GET y POST
-   - app/api/clients/[id]/route.ts: GET, PUT, DELETE
-
-4. Crear app/features/client/index.ts como barrel export de types, services
-
-5. Ejecutar npm run build para verificar compilacion exitosa
+3. Ejecutar npm run build para verificar compilacion exitosa
 
 RESTRICCIONES:
 - No agregar comentarios al codigo
-- Usar el cliente Supabase del browser (client.ts) para las consultas
+- No crear API Routes ni servicios - las llamadas a Supabase se hacen directamente desde los componentes
 - Seguir convenciones existentes del proyecto
-- Los POST/PUT/DELETE deben requerir autenticacion
-- Retornar codigos HTTP apropiados (200, 201, 400, 404, 500)
 
 VERIFICACION:
 - npm run build sin errores
@@ -405,12 +381,12 @@ VERIFICACION:
 
 ## FASE 4: FEATURE - PROPIEDADES (CRUD)
 
-### Tarea 4.1 - Tipos, servicios y API para propiedades
+### Tarea 4.1 - Tipos TypeScript para propiedades        OK
 
 **Prompt para el agente de IA:**
 
 ```
-TAREA 4.1: Crear el feature properties con tipos, servicios de acceso a datos y API routes.
+TAREA 4.1: Crear el feature properties con tipos TypeScript.
 
 CONTEXTO:
 - Proyecto Next.js 16 con App Router, TypeScript estricto
@@ -420,7 +396,7 @@ CONTEXTO:
 - Feature owner ya creado en app/features/owner/
 - Feature client ya creado en app/features/client/
 - Path aliases: @features/* -> ./app/features/*, @shared/* -> ./app/shared/*
-- Verificar documentacion de Next.js en node_modules/next/dist/docs/ para Route Handlers
+- ARQUITECTURA SIMPLIFICADA: No se usan API Routes ni servicios. Las llamadas a Supabase se hacen directamente desde los componentes/páginas.
 
 INSTRUCCIONES:
 1. Crear app/features/properties/types/index.ts:
@@ -430,146 +406,47 @@ INSTRUCCIONES:
    - Interface CreatePropertyInput { title, description?, area?, base_price?, sale_price?, address?, type, owner_id }
    - Interface UpdatePropertyInput (campos opcionales para actualizar)
 
-2. Crear app/features/properties/services/index.ts:
-   - getProperties(filters?: { type?: string; owner_id?: string }): Promise<Property[]>
-   - getPropertyById(id: string): Promise<PropertyWithMedia | null> (con JOIN a property_media y owner)
-   - createProperty(data: CreatePropertyInput): Promise<Property>
-   - updateProperty(id: string, data: UpdatePropertyInput): Promise<Property>
-   - deleteProperty(id: string): Promise<void>
-   - addPropertyMedia(data: { property_id: string; file_url: string; cover_image?: boolean; display_order?: number }): Promise<PropertyMedia>
-   - removePropertyMedia(id: string): Promise<void>
+2. Crear app/features/properties/index.ts como barrel export de types
 
-3. Crear Route Handlers en app/api/properties/:
-   - app/api/properties/route.ts: GET (con query params type, owner_id) y POST
-   - app/api/properties/[id]/route.ts: GET, PUT, DELETE
-   - app/api/properties/[id]/media/route.ts: GET, POST, DELETE
-
-4. Crear app/features/properties/index.ts como barrel export
-
-5. Ejecutar npm run build para verificar compilacion exitosa
+3. Ejecutar npm run build para verificar compilacion exitosa
 
 RESTRICCIONES:
 - No agregar comentarios al codigo
-- Las Route Handlers deben validar datos de entrada
-- Retornar codigos HTTP apropiados (200, 201, 400, 404, 500)
-- Usar NextResponse de next/server
-- Los POST/PUT/DELETE deben requerir autenticacion (verificar si hay sesion Supabase)
+- No crear API Routes ni servicios - las llamadas a Supabase se hacen directamente desde los componentes
+- Seguir convenciones existentes del proyecto
 
 VERIFICACION:
 - npm run build sin errores
-- Las rutas API deben ser accesibles y retornar JSON valido
+- Los tipos deben coincidir con la estructura de la tabla en Supabase
 ```
 
 ---
 
-### Tarea 4.2 - Storage de Supabase para imagenes y videos
+### Tarea 4.2 - Storage de Supabase para imagenes y videos        OK
 
-**Prompt para el agente de IA:**
+**Ejecucion manual en Supabase:**
 
-```
-TAREA 4.2: Configurar Storage de Supabase para almacenar fotografias y videos de propiedades.
-
-CONTEXTO:
-- Proyecto Supabase con plan gratuito (1GB de storage)
-- Base de datos con tabla property_media que almacena file_url
-- Se necesita un bucket para almacenar los archivos multimedia
-
-INSTRUCCIONES:
-Generar un archivo sql/003_storage.sql con:
-
-1. Crear bucket 'property-media' en Supabase Storage:
-   INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-   VALUES ('property-media', 'property-media', true, 52428800, ARRAY['image/jpeg','image/png','image/webp','video/mp4','video/webm']);
-
-2. Politicas RLS para el bucket:
+1. Ir a Supabase Dashboard > Storage
+2. Crear bucket 'property-media' con configuracion:
+   - Public bucket: ✅ Activado
+   - File size limit: 50 MB
+   - Allowed MIME types: image/jpeg, image/png, image/webp, video/mp4, video/webm
+3. Crear politicas RLS:
    - SELECT publico (anonimos pueden ver imagenes/videos)
    - INSERT/UPDATE/DELETE solo para usuarios autenticados
-   - Crear las politicas sobre storage.objects
 
-3. Crear funcion helper en app/features/properties/services/storage.ts:
-   - uploadPropertyMedia(file: File, propertyId: string): Promise<string> (retorna la URL publica)
-   - deletePropertyMedia(mediaUrl: string): Promise<void>
-   - La ruta del archivo debe ser: {propertyId}/{uuid}-{filename}
-
-4. Actualizar el barrel export de app/features/properties/index.ts
-
-5. Ejecutar npm run build para verificar compilacion exitosa
-
-RESTRICCIONES:
-- Plan gratuito de Supabase: 1GB de storage total
-- Limite de 50MB por archivo
-- Solo formatos permitidos: JPEG, PNG, WebP, MP4, WebM
-- No agregar comentarios al codigo
-
-VERIFICACION:
-- npm run build sin errores
-- El bucket debe ser accesible publicamente para lectura
-
-NOTA PARA EL USUARIO: Si el SQL de storage no funciona directamente, crear el bucket manualmente desde Supabase Dashboard > Storage > New Bucket con nombre 'property-media', publico, y configurar las politicas manualmente.
-```
-
-**Ejecucion manual:** El usuario debe ejecutar `sql/003_storage.sql` en Supabase o crear el bucket manualmente desde el Dashboard.
+**Nota:** Las llamadas al storage se hacen directamente desde los componentes usando `supabase.storage.from('property-media')`.
 
 ---
 
-## FASE 5: FEATURE - RELACION PROPERTY-CLIENT
+## FASE 6: FEATURE - CITAS (APPOINTMENTS)          ok
 
-### Tarea 5.1 - Gestion de relacion N:M property-client
+### Tarea 6.1 - Tipos TypeScript para citas
 
 **Prompt para el agente de IA:**
 
 ```
-TAREA 5.1: Crear el feature property-client para gestionar la relacion N:M entre propiedades y clientes.
-
-CONTEXTO:
-- Proyecto Next.js 16 con App Router, TypeScript estricto
-- Tabla pivote property_client en Supabase (property_id, client_id) con PK compuesta
-- Feature properties ya creado en app/features/properties/
-- Feature client ya creado en app/features/client/
-- Funcion RPC get_property_clients(p_property_id) disponible
-- Feature-based architecture
-
-INSTRUCCIONES:
-1. Crear app/features/property-client/types/index.ts:
-   - Interface PropertyClient { property_id: string; client_id: string; }
-   - Interface ClientInterest { client: Client; property: Property; }
-
-2. Crear app/features/property-client/services/index.ts:
-   - getClientsByProperty(propertyId: string): Promise<Client[]> (usa RPC get_property_clients)
-   - getPropertiesByClient(clientId: string): Promise<Property[]>
-   - addClientToProperty(propertyId: string, clientId: string): Promise<PropertyClient>
-   - removeClientFromProperty(propertyId: string, clientId: string): Promise<void>
-   - isClientInterested(propertyId: string, clientId: string): Promise<boolean>
-
-3. Crear Route Handlers:
-   - app/api/property-client/route.ts: GET (query params property_id, client_id), POST (asociar), DELETE (desasociar)
-
-4. Crear app/features/property-client/index.ts como barrel export
-
-5. Ejecutar npm run build para verificar compilacion exitosa
-
-RESTRICCIONES:
-- No agregar comentarios al codigo
-- POST (asociar) es publico (anon puede registrar interes)
-- DELETE requiere autenticacion
-- Validar que property_id y client_id existan antes de asociar
-- Retornar codigos HTTP apropiados
-
-VERIFICACION:
-- npm run build sin errores
-- La asociacion y desasociacion funciona correctamente
-```
-
----
-
-## FASE 6: FEATURE - CITAS (APPOINTMENTS)
-
-### Tarea 6.1 - CRUD de citas y API
-
-**Prompt para el agente de IA:**
-
-```
-TAREA 6.1: Crear el feature appointments con tipos, servicios y API routes para el sistema de citas.
+TAREA 6.1: Crear el feature appointments con tipos TypeScript.
 
 CONTEXTO:
 - Proyecto Next.js 16 con App Router, TypeScript estricto
@@ -578,6 +455,7 @@ CONTEXTO:
 - Funciones RPC: get_appointments_by_property, get_appointments_summary, cancel_appointment
 - Feature client ya creado en app/features/client/
 - Feature properties ya creado en app/features/properties/
+- ARQUITECTURA SIMPLIFICADA: No se usan API Routes ni servicios. Las llamadas a Supabase se hacen directamente desde los componentes/páginas.
 
 INSTRUCCIONES:
 1. Crear app/features/appointments/types/index.ts:
@@ -588,93 +466,57 @@ INSTRUCCIONES:
    - Type AppointmentStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed'
    - Interface AppointmentsSummary { total: number; pending: number; confirmed: number; cancelled: number; completed: number; upcoming: number }
 
-2. Crear app/features/appointments/services/index.ts:
-   - createAppointment(data: CreateAppointmentInput): Promise<Appointment>
-   - getAppointmentById(id: string): Promise<AppointmentWithClient | null> (con JOIN a client)
-   - getAppointments(filters?: { client_id?: string; status?: string }): Promise<AppointmentWithClient[]>
-   - getAppointmentsSummary(): Promise<AppointmentsSummary> (usa RPC)
-   - updateAppointment(id: string, data: UpdateAppointmentInput): Promise<Appointment>
-   - cancelAppointment(id: string): Promise<void> (usa RPC cancel_appointment)
-   - deleteAppointment(id: string): Promise<void>
+2. Crear app/features/appointments/index.ts como barrel export de types
 
-3. Crear Route Handlers:
-   - app/api/appointments/route.ts: GET (query params: client_id, status), POST
-   - app/api/appointments/[id]/route.ts: GET, PUT, DELETE
-   - app/api/appointments/summary/route.ts: GET (requiere autenticacion)
-
-4. Crear app/features/appointments/index.ts como barrel export
-
-5. Ejecutar npm run build para verificar compilacion exitosa
+3. Ejecutar npm run build para verificar compilacion exitosa
 
 RESTRICCIONES:
 - No agregar comentarios al codigo
-- POST (crear cita) es publico (anon), pero PUT/DELETE requieren autenticacion
-- Validar todos los campos requeridos en POST
-- El visit_date no puede ser una fecha pasada
-- Retornar codigos HTTP apropiados
+- No crear API Routes ni servicios - las llamadas a Supabase se hacen directamente desde los componentes
+- Las funciones RPC se invocan con supabase.rpc() desde los componentes
 
 VERIFICACION:
 - npm run build sin errores
-- Las citas no se pueden duplicar (constraint + validacion)
-- La cita se asocia correctamente al client_id
+- Los tipos deben coincidir con la estructura de la tabla en Supabase
 ```
 
 ---
 
-### Tarea 6.2 - Notificaciones por email y WhatsApp
+### Tarea 6.2 - Notificaciones por WhatsApp
 
-**Prompt para el agente de IA:**
+**Ejecucion directa en componentes:**
 
 ```
-TAREA 6.2: Implementar sistema de notificaciones por email y WhatsApp para el CRUD de citas.
+TAREA 6.2: Implementar generacion de links de WhatsApp para notificaciones.
 
 CONTEXTO:
 - Feature appointments ya creado en app/features/appointments/
-- Supabase plan gratuito incluye Edge Functions (500,000 invocaciones/mes)
-- Se necesita notificar al cliente por email y/o WhatsApp cuando:
-  a. Se crea una cita (confirmacion)
-  b. Se actualiza una cita (cambio de fecha)
-  c. Se cancela una cita
-- Para email: usar Supabase Edge Functions con Resend (incluido en plan gratuito) o similar
-- Para WhatsApp: usar la API de WhatsApp Web mediante un servicio como Twilio, o generar un link de WhatsApp con mensaje pre-formateado
+- Para WhatsApp: generar links de wa.me con mensaje pre-formateado (sin costo)
+- ARQUITECTURA SIMPLIFICADA: No se usan servicios. La logica se implementa directamente en los componentes.
 
 INSTRUCCIONES:
 1. Crear app/features/notifications/types/index.ts:
    - Interface NotificationData { appointment: Appointment; client: Client; action: 'created' | 'updated' | 'cancelled' }
-   - Interface NotificationResult { success: boolean; channel: 'email' | 'whatsapp'; message: string }
 
-2. Crear app/features/notifications/services/email.ts:
-   - Funcion sendAppointmentEmail(data: NotificationData): Promise<NotificationResult>
-   - Generar templates de email para cada accion (creada, actualizada, cancelada)
-   - Usar fetch al endpoint de Supabase Edge Functions o Resend API
-
-3. Crear app/features/notifications/services/whatsapp.ts:
+2. Crear app/features/notifications/utils/whatsapp.ts:
    - Funcion generateWhatsAppMessage(data: NotificationData): string
-   - Generar mensajes pre-formateados para cada accion
    - Funcion getWhatsAppLink(phone: string, message: string): string (retorna link wa.me)
 
-4. Crear app/features/notifications/services/index.ts:
-   - Funcion sendAppointmentNotification(data: NotificationData): Promise<NotificationResult[]>
-   - Esta funcion orquesta el envio por ambos canales
+3. Crear app/features/notifications/index.ts como barrel export
 
-5. Crear app/features/notifications/index.ts como barrel export
-
-6. Actualizar las Route Handlers de appointments para llamar a sendAppointmentNotification despues de cada operacion CRUD exitosa
-
-7. Ejecutar npm run build para verificar compilacion exitosa
+4. Ejecutar npm run build para verificar compilacion exitosa
 
 RESTRICCIONES:
-- Plan gratuito de Supabase
 - No agregar comentarios al codigo
-- Para WhatsApp en esta fase, generar links de wa.me con mensajes pre-formateados (no API de pago)
-- Para email, evaluar si Supabase Auth emails son suficientes o se necesita Edge Function
+- Solo WhatsApp (links wa.me), no email en esta fase
 - Los mensajes deben estar en espanol
+- Las llamadas a Supabase para obtener datos del cliente se hacen directamente
 
 VERIFICACION:
 - npm run build sin errores
-- Las notificaciones se generan correctamente al crear/actualizar/cancelar citas
+- Los links de WhatsApp se generan correctamente
 
-NOTA PARA EL USUARIO: Para email en produccion se necesitara configurar un proveedor como Resend (plan gratuito: 3,000 emails/mes).
+NOTA: Para email en produccion se necesitara configurar un proveedor como Resend (plan gratuito: 3,000 emails/mes).
 ```
 
 ---
@@ -691,9 +533,9 @@ TAREA 7.1: Configurar autenticacion para el modulo del administrador usando Supa
 CONTEXTO:
 - Proyecto Supabase con Auth habilitado por defecto
 - Se necesita un solo usuario administrador (el propietario de Wasave Inmobiliaria)
-- Las operaciones de escritura (crear/editar propiedades, editar/eliminar citas, gestionar owners/clients) requieren autenticacion
+- Las operaciones de escritura requieren autenticacion
 - Supabase Auth en plan gratuito: 50,000 MAUs
-- NO existe tabla admin_profiles en este esquema
+- ARQUITECTURA SIMPLIFICADA: La autenticacion se maneja directamente con Supabase Auth, sin middleware personalizado
 
 INSTRUCCIONES:
 1. Crear app/features/auth/types/index.ts:
@@ -701,30 +543,19 @@ INSTRUCCIONES:
    - Interface LoginInput { email: string; password: string }
    - Interface AuthState { user: AdminUser | null; isLoading: boolean; isAuthenticated: boolean }
 
-2. Crear app/features/auth/services/index.ts:
-   - login(data: LoginInput): Promise<AdminUser>
-   - logout(): Promise<void>
-   - getSession(): Promise<AdminUser | null>
-   - onAuthStateChange(callback: (user: AdminUser | null) => void): () => void (retorna unsubscribe)
-
-3. Crear app/features/auth/hooks/useAuth.ts:
+2. Crear app/features/auth/hooks/useAuth.ts:
    - Hook useAuth() que retorne AuthState + login + logout
-   - Usar React context o estado local
-   - Verificar sesion al montar
+   - Usar supabase.auth.signInWithPassword() y supabase.auth.signOut()
+   - Verificar sesion al montar con supabase.auth.getSession()
+   - Escuchar cambios con supabase.auth.onAuthStateChange()
 
-4. Crear app/features/auth/context/AuthContext.tsx:
+3. Crear app/features/auth/context/AuthContext.tsx:
    - AuthProvider component que envuelve la app
    - Proveer useAuth hook
 
-5. Crear middleware de autenticacion para las API routes:
-   - Crear app/shared/utils/auth.ts con funcion requireAuth(request: Request) que verifique el token de Supabase
-   - Si no hay sesion valida, retornar Response 401
+4. Crear app/features/auth/index.ts como barrel export
 
-6. Actualizar las Route Handlers existentes para usar requireAuth en operaciones de escritura
-
-7. Crear app/features/auth/index.ts como barrel export
-
-8. Ejecutar npm run build para verificar compilacion exitosa
+5. Ejecutar npm run build para verificar compilacion exitosa
 
 RESTRICCIONES:
 - No agregar comentarios al codigo
@@ -732,13 +563,14 @@ RESTRICCIONES:
 - No implementar registro publico
 - Usar Supabase Auth con email/password
 - Las credenciales nunca deben exponerse en el cliente
+- La seguridad de escritura se maneja via RLS en Supabase (no en Next.js)
 
 VERIFICACION:
 - npm run build sin errores
-- Las rutas protegidas retornan 401 sin autenticacion
-- Las rutas protegidas funcionan correctamente con sesion valida
+- El hook useAuth funciona correctamente
+- El AuthProvider envuelve la app sin errores
 
-NOTA PARA EL USUARIO: Crear el usuario administrador en Supabase Dashboard > Authentication > Users > Add User. Usar el email y password deseados para el administrador.
+NOTA PARA EL USUARIO: Crear el usuario administrador en Supabase Dashboard > Authentication > Users > Add User.
 ```
 
 **Ejecucion manual:** El usuario debe crear el usuario administrador en Supabase Dashboard > Authentication > Users > Add User.
@@ -811,53 +643,47 @@ TAREA 8.2: Crear las paginas del panel admin para gestionar propiedades (listar,
 
 CONTEXTO:
 - Panel admin en app/(admin)/admin/ con layout y autenticacion
-- Feature properties con API routes funcionales (GET, POST, PUT, DELETE)
-- Feature owner con servicio getOwners() para selector de propietario
+- Feature properties con tipos TypeScript
+- Feature owner con tipos TypeScript
 - Storage de Supabase configurado para property-media bucket
 - Componentes UI: Button, Card, SectionHeader
-- Upload de archivos via storage.ts del feature properties
+- ARQUITECTURA SIMPLIFICADA: Las llamadas a Supabase se hacen directamente desde los componentes
 
 INSTRUCCIONES:
 1. Crear app/(admin)/admin/propiedades/page.tsx:
    - Lista de todas las propiedades con filtros por tipo
-   - Tabla/cards con: imagen cover, titulo, tipo, precio base, precio venta, estado, owner, acciones
+   - Tabla/cards con: imagen cover, titulo, tipo, precio base, precio venta, owner, acciones
    - Boton "Nueva Propiedad" que lleva al formulario de creacion
    - Acciones por propiedad: Editar, Eliminar
+   - Llamadas directas a supabase.from("property").select("*, owner:owner_id(*)")
 
 2. Crear app/(admin)/admin/propiedades/nueva/page.tsx:
-   - Formulario completo para crear propiedad:
-     * Titulo, Descripcion (textarea)
-     * Tipo (input text libre, ej: Lote, Casa Finca, Cabana)
-     * Area, Precio base, Precio venta, Direccion
-     * Owner (select desde owners existentes con opcion de crear nuevo)
-     * Upload multiple de imagenes/videos con drag & drop
-     * Seleccionar imagen de portada (cover_image)
-   - Validacion de formulario
-   - Al guardar: crear propiedad + subir media + asociar media
+   - Formulario completo para crear propiedad
+   - Owner (select desde owners existentes, llamada directa a supabase.from("owner").select())
+   - Upload multiple de imagenes/videos con supabase.storage.from("property-media")
+   - Al guardar: crear propiedad + subir media + asociar media en property_media
 
 3. Crear app/(admin)/admin/propiedades/[id]/editar/page.tsx:
    - Formulario de edicion precargado con datos existentes
-   - Gestion de media existente (eliminar, reordenar, agregar nuevos)
-   - Mismas validaciones que el formulario de creacion
+   - Gestion de media existente (eliminar, agregar nuevos)
 
 4. Crear componentes del feature admin/properties:
-   - app/features/admin/components/PropertyForm.tsx (formulario reutilizable crear/editar)
+   - app/features/admin/components/PropertyForm.tsx
    - app/features/admin/components/PropertyList.tsx
    - app/features/admin/components/MediaUploader.tsx
-   - app/features/admin/components/ConfirmDialog.tsx (para eliminar)
+   - app/features/admin/components/ConfirmDialog.tsx
 
 5. Ejecutar npm run build para verificar compilacion exitosa
 
 RESTRICCIONES:
 - No agregar comentarios al codigo
-- Formularios con validacion client-side
+- Las llamadas a Supabase se hacen directamente desde los componentes
 - Manejar estados de carga y error
 - Confirmar antes de eliminar
-- Optimizar imagenes antes de subir (max 5MB recomendado)
 
 VERIFICACION:
 - npm run build sin errores
-- CRUD completo funcional: crear, listar, editar, eliminar propiedades
+- CRUD completo funcional
 - Upload de imagenes funcional
 ```
 
@@ -872,8 +698,9 @@ TAREA 8.3: Crear las paginas del panel admin para gestionar propietarios (owners
 
 CONTEXTO:
 - Panel admin en app/(admin)/admin/ con layout y autenticacion
-- Feature owner con API routes funcionales (GET, POST, PUT, DELETE)
+- Feature owner con tipos TypeScript
 - Tabla owner con campos: owner_id, document_id, name, email, phone
+- ARQUITECTURA SIMPLIFICADA: Las llamadas a Supabase se hacen directamente desde los componentes
 
 INSTRUCCIONES:
 1. Crear app/(admin)/admin/owners/page.tsx:
@@ -881,6 +708,7 @@ INSTRUCCIONES:
    - Tabla con: nombre, documento, email, telefono, acciones
    - Boton "Nuevo Propietario"
    - Acciones: Editar, Eliminar
+   - Llamadas directas a supabase.from("owner").select()
 
 2. Crear app/(admin)/admin/owners/nuevo/page.tsx:
    - Formulario para crear owner: document_id, name, email, phone
@@ -897,8 +725,8 @@ INSTRUCCIONES:
 
 RESTRICCIONES:
 - No agregar comentarios al codigo
+- Las llamadas a Supabase se hacen directamente desde los componentes
 - Validar que no se elimine un owner que tiene propiedades asociadas
-- Manejar estados de carga y error
 
 VERIFICACION:
 - npm run build sin errores
@@ -916,8 +744,9 @@ TAREA 8.4: Crear las paginas del panel admin para gestionar clientes.
 
 CONTEXTO:
 - Panel admin en app/(admin)/admin/ con layout y autenticacion
-- Feature client con API routes funcionales (GET, POST, PUT, DELETE)
+- Feature client con tipos TypeScript
 - Tabla client con campos: client_id, document_id, name, last_name, email, phone
+- ARQUITECTURA SIMPLIFICADA: Las llamadas a Supabase se hacen directamente desde los componentes
 
 INSTRUCCIONES:
 1. Crear app/(admin)/admin/clientes/page.tsx:
@@ -925,6 +754,7 @@ INSTRUCCIONES:
    - Tabla con: nombre, apellido, documento, email, telefono, acciones
    - Boton "Nuevo Cliente"
    - Acciones: Editar, Eliminar
+   - Llamadas directas a supabase.from("client").select()
 
 2. Crear app/(admin)/admin/clientes/nuevo/page.tsx:
    - Formulario para crear client: document_id, name, last_name, email, phone
@@ -941,7 +771,7 @@ INSTRUCCIONES:
 
 RESTRICCIONES:
 - No agregar comentarios al codigo
-- Manejar estados de carga y error
+- Las llamadas a Supabase se hacen directamente desde los componentes
 
 VERIFICACION:
 - npm run build sin errores
@@ -959,10 +789,10 @@ TAREA 8.5: Crear las paginas del panel admin para gestionar citas agendadas.
 
 CONTEXTO:
 - Panel admin en app/(admin)/admin/ con layout y autenticacion
-- Feature appointments con API routes funcionales
+- Feature appointments con tipos TypeScript
 - Feature client para obtener datos del cliente asociado a la cita
-- API de appointments: GET (con filtros), PUT (editar), DELETE (eliminar)
-- Notificaciones configuradas (se envian automaticamente al hacer CRUD)
+- Funciones RPC: get_appointments_by_property, get_appointments_summary, cancel_appointment
+- ARQUITECTURA SIMPLIFICADA: Las llamadas a Supabase se hacen directamente desde los componentes
 
 INSTRUCCIONES:
 1. Crear app/(admin)/admin/citas/page.tsx:
@@ -972,6 +802,7 @@ INSTRUCCIONES:
    - Columnas: Fecha visita, Cliente (nombre + apellido), Email, Telefono, Estado, Observaciones, Acciones
    - Ordenar por visit_date descendente
    - Indicadores visuales por estado (colores)
+   - Llamadas directas a supabase.from("appointment").select("*, client:client_id(*)")
 
 2. Crear app/(admin)/admin/citas/[id]/page.tsx:
    - Vista detalle de la cita
@@ -981,7 +812,6 @@ INSTRUCCIONES:
 3. Crear app/(admin)/admin/citas/[id]/editar/page.tsx:
    - Formulario para editar fecha de visita y observaciones
    - Al guardar, validar nueva fecha
-   - Enviar notificacion al cliente del cambio
 
 4. Crear componentes:
    - app/features/admin/components/AppointmentList.tsx
@@ -993,15 +823,13 @@ INSTRUCCIONES:
 
 RESTRICCIONES:
 - No agregar comentarios al codigo
+- Las llamadas a Supabase se hacen directamente desde los componentes
 - Las acciones de editar/cancelar/eliminar deben confirmar antes de ejecutar
-- Las notificaciones se envian automaticamente (ya implementado en Tarea 6.2)
-- Manejar estados de carga y error
 
 VERIFICACION:
 - npm run build sin errores
 - Lista de citas con filtros funcional
 - Edicion y eliminacion de citas funcional
-- Notificaciones se envian al editar/cancelar
 ```
 
 ---
@@ -1058,12 +886,12 @@ TAREA 9.1: Crear las paginas publicas para que los clientes exploren propiedades
 CONTEXTO:
 - Landing page existente en app/page.tsx con seccion CompraVentaSection que muestra tipos de propiedad
 - Actualmente los botones "Consultar disponibilidad" redirigen a WhatsApp
-- Feature properties con API funcional
-- Feature appointments con API funcional
+- Feature properties con tipos TypeScript
+- Feature appointments con tipos TypeScript
 - Feature client para crear/obtener clientes
-- Feature property-client para registrar interes
 - Theme system con CSS variables (light/dark), fuente Montserrat
 - Componentes UI: Button, Card, SectionHeader
+- ARQUITECTURA SIMPLIFICADA: Las llamadas a Supabase se hacen directamente desde los componentes
 
 INSTRUCCIONES:
 1. Crear app/(public)/propiedades/page.tsx:
@@ -1072,6 +900,7 @@ INSTRUCCIONES:
    - Grid de cards de propiedades con: imagen cover, titulo, precio venta, direccion, area
    - Al hacer clic en una propiedad, navegar al detalle
    - Solo mostrar propiedades activas
+   - Llamadas directas a supabase.from("property").select("*, media:property_media(*)")
 
 2. Crear app/(public)/propiedades/[id]/page.tsx:
    - Vista detalle de la propiedad
@@ -1086,6 +915,7 @@ INSTRUCCIONES:
      * Mensaje de confirmacion con resumen de la cita
    - Validacion de formulario
    - Al agendar: crear cliente si no existe + crear cita + registrar interes en property_client
+   - Llamadas directas a Supabase para todas las operaciones
 
 3. Crear componentes:
    - app/features/properties/components/PropertyCard.tsx
@@ -1103,9 +933,9 @@ INSTRUCCIONES:
 RESTRICCIONES:
 - No agregar comentarios al codigo
 - Las paginas son publicas (no requieren autenticacion)
+- Las llamadas a Supabase se hacen directamente desde los componentes
 - Diseno responsive y consistente con la landing page
 - El formulario de cita debe validar: email valido, telefono valido, fecha futura
-- Manejar estados de carga, error y exito
 - Generar link de WhatsApp como canal alternativo de contacto en cada propiedad
 
 VERIFICACION:
@@ -1128,11 +958,11 @@ TAREA 10.1: Realizar una auditoria de seguridad completa del proyecto y aplicar 
 
 CONTEXTO:
 - Proyecto Next.js 16 + Supabase para Wasave Inmobiliaria
-- Features implementados: auth, owner, client, property, property-client, appointments, notifications, admin panel
-- API routes en app/api/
+- Features implementados: auth, owner, client, property, appointments, notifications, admin panel
 - Autenticacion con Supabase Auth
 - RLS habilitado en todas las tablas
 - Storage bucket para medios
+- ARQUITECTURA SIMPLIFICADA: No hay API Routes, la seguridad se maneja via RLS en Supabase
 
 INSTRUCCIONES:
 1. Revisar y fortalecer Row Level Security (RLS):
@@ -1142,33 +972,27 @@ INSTRUCCIONES:
    - Asegurar que solo authenticated puede: CRUD propiedades/owners/clients, editar/eliminar citas
    - Agregar politicas para storage.objects del bucket property-media
 
-2. Revisar API Routes:
-   - Verificar que todas las rutas de escritura validan autenticacion
-   - Verificar sanitizacion de inputs (SQL injection, XSS)
-   - Verificar que no se exponen datos sensibles (service_role_key, etc.)
-   - Agregar rate limiting donde sea necesario (especialmente en POST de citas)
-
-3. Revisar variables de entorno:
+2. Revisar variables de entorno:
    - Confirmar que .env.local esta en .gitignore
    - Confirmar que SUPABASE_SERVICE_ROLE_KEY solo se usa en server-side
    - Confirmar que NEXT_PUBLIC_* solo expone claves seguras
 
-4. Revisar headers de seguridad:
+3. Revisar headers de seguridad:
    - Actualizar next.config.ts con headers de seguridad:
      * X-Frame-Options: DENY
      * X-Content-Type-Options: nosniff
      * Referrer-Policy: strict-origin-when-cross-origin
      * Content-Security-Policy (basico)
 
-5. Revisar el codigo fuente completo:
+4. Revisar el codigo fuente completo:
    - Buscar posibles fugas de datos
    - Buscar uso inseguro de dangerouslySetInnerHTML
-   - Verificar que los formularios validan tanto en cliente como en servidor
    - Verificar que los archivos subidos al storage tienen tipos MIME validados
+   - Verificar que las llamadas a Supabase desde componentes usan RLS correctamente
 
-6. Generar reporte de hallazgos y correcciones aplicadas
+5. Generar reporte de hallazgos y correcciones aplicadas
 
-7. Ejecutar npm run build para verificar compilacion exitosa
+6. Ejecutar npm run build para verificar compilacion exitosa
 
 RESTRICCIONES:
 - No agregar comentarios al codigo
@@ -1195,8 +1019,9 @@ TAREA 11.1: Realizar pruebas de integracion completa y corregir problemas.
 
 CONTEXTO:
 - Todas las fases anteriores completadas
-- Landing page + panel admin + API + base de datos funcionando
+- Landing page + panel admin + base de datos funcionando
 - Se necesita verificar que todo el flujo funciona de extremo a extremo
+- ARQUITECTURA SIMPLIFICADA: Todas las llamadas a Supabase se hacen directamente desde los componentes
 
 INSTRUCCIONES:
 1. Verificar flujos completos:
@@ -1222,7 +1047,7 @@ INSTRUCCIONES:
    - Selecciona una propiedad
    - Completa formulario y agenda cita (se crea cliente automaticamente si es nuevo)
    - Se registra el interes en property_client
-   - Recibe notificacion (email/WhatsApp link)
+   - Recibe link de WhatsApp
 
    FLUJO 5 - Gestionar citas (Admin):
    - Admin ve las citas en /admin/citas
@@ -1230,7 +1055,6 @@ INSTRUCCIONES:
    - Confirma una cita (cambia estado)
    - Edita fecha de una cita
    - Cancela una cita
-   - Verifica que las notificaciones se envian
 
    FLUJO 6 - Certificados:
    - Admin accede a /admin/certificados
@@ -1261,17 +1085,18 @@ VERIFICACION:
 |---|---|---|---|
 | 1 | `sql/001_initial_schema.sql` | Extension pgcrypto, tablas, indices, triggers, RLS | Manual en SQL Editor |
 | 2 | `sql/002_functions.sql` | Funciones RPC (stored procedures) | Manual en SQL Editor |
-| 3 | `sql/003_storage.sql` | Bucket de storage y politicas | Manual en SQL Editor o Dashboard |
+| 3 | Storage bucket | Crear bucket 'property-media' manualmente | Supabase Dashboard > Storage |
 
 ## RESUMEN DE FEATURES (Arquitectura)
 
+### Arquitectura simplificada (Frontend puro)
+
 ```
 app/features/
-├── owner/              # Fase 2: Propietarios
-├── client/             # Fase 3: Clientes
-├── properties/         # Fase 4: CRUD propiedades + media
-├── property-client/    # Fase 5: Relacion N:M property-client
-├── appointments/       # Fase 6: Sistema de citas
+├── owner/              # Tipos TypeScript para propietarios
+├── client/             # Tipos TypeScript para clientes
+├── properties/         # Tipos TypeScript para propiedades
+├── appointments/       # Tipos TypeScript para citas
 ├── notifications/      # Fase 6.2: Email y WhatsApp
 ├── auth/               # Fase 7: Autenticacion admin
 ├── admin/              # Fase 8: Panel de administracion
@@ -1282,6 +1107,24 @@ app/features/
 ├── compra-venta/       # (existente) Seccion compra-venta
 └── representante-legal/# (existente) Seccion representante
 ```
+
+### Decision de arquitectura
+
+**NO se usan API Routes de Next.js** porque:
+1. Supabase ya proporciona API REST automatica al crear tablas
+2. El cliente JS de Supabase permite hacer llamadas directas desde el frontend
+3. Para una aplicacion con pocas vistas, no es necesario una capa backend adicional
+4. La seguridad se maneja via RLS (Row Level Security) en Supabase
+
+**Los features solo contienen tipos TypeScript** (interfaces) para:
+- Validacion en tiempo de compilacion
+- Autocompletado en el IDE
+- Documentacion de la estructura de datos
+
+**Las llamadas a Supabase se hacen directamente** desde:
+- Componentes React (client-side)
+- Server Components (server-side)
+- Usando `createClient` de `@/app/shared/utils/supabase/client`
 
 ## RESTRICCIONES DEL PLAN GRATUITO DE SUPABASE
 
