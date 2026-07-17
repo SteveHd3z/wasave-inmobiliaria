@@ -354,7 +354,7 @@ VERIFICACION:
 
 ## FASE 3: FEATURE - CLIENTES (CLIENT)
 
-### Tarea 3.1 - API y tipos TypeScript para client
+### Tarea 3.1 - API y tipos TypeScript para client       ok
 
 **Prompt para el agente de IA:**
 
