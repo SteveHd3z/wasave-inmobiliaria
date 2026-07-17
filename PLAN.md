@@ -303,7 +303,7 @@ NOTA PARA EL USUARIO: Ejecutar este script en Supabase > SQL Editor despues de h
 
 ## FASE 2: FEATURE - PROPIETARIOS (OWNER)
 
-### Tarea 2.1 - API y tipos TypeScript para owner
+### Tarea 2.1 - API y tipos TypeScript para owner     ok
 
 **Prompt para el agente de IA:**
 
