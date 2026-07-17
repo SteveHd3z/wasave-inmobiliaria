@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthProvider, useAuthContext } from "@features/auth";
 import { Button } from "@shared/components/ui";
+import { ThemeToggle } from "@shared/components/layout";
 
 function LoginPageContent() {
   const { login, isAuthenticated, isLoading } = useAuthContext();
@@ -12,6 +13,12 @@ function LoginPageContent() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push("/admin");
+    }
+  }, [isLoading, isAuthenticated, router]);
 
   if (isLoading) {
     return (
@@ -22,7 +29,6 @@ function LoginPageContent() {
   }
 
   if (isAuthenticated) {
-    router.push("/admin");
     return null;
   }
 
@@ -43,9 +49,12 @@ function LoginPageContent() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4"
+      className="min-h-screen flex items-center justify-center p-4 relative"
       style={{ backgroundColor: "var(--background)" }}
     >
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div
         className="w-full max-w-md rounded-2xl p-8"
         style={{

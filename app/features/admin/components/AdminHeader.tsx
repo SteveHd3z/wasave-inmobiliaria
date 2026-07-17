@@ -2,6 +2,7 @@
 
 import { useAuthContext } from "@features/auth";
 import { Button } from "@shared/components/ui";
+import { ThemeToggle } from "@shared/components/layout";
 import { useRouter } from "next/navigation";
 
 interface AdminHeaderProps {
@@ -14,7 +15,7 @@ export default function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
 
   const handleLogout = async () => {
     await logout();
-    router.push("/admin/login");
+    router.push("/login");
   };
 
   return (
@@ -38,10 +39,11 @@ export default function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
 
       <div className="flex-1" />
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4">        
         <span className="text-sm hidden sm:block" style={{ color: "var(--muted)" }}>
           {user?.email}
         </span>
+        <ThemeToggle />
         <Button variant="outline" size="sm" onClick={handleLogout}>
           Cerrar sesion
         </Button>
