@@ -14,8 +14,7 @@ export default function NuevaPropiedadPage() {
   const handleSubmit = async (
     data: CreatePropertyInput,
     files: File[],
-    coverFile: File | null,
-    _removedMediaIds: string[]
+    coverFile: File | null
   ) => {
     setLoading(true);
 

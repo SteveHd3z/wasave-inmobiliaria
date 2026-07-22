@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { createBrowserClient } from "@shared/utils/supabase";
 import { PropertyList, ConfirmDialog } from "@features/admin";
@@ -15,7 +15,7 @@ export default function PropiedadesPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  const fetchProperties = async () => {
+  const loadProperties = useCallback(async () => {
     setLoading(true);
     let query = supabase
       .from("property")
@@ -29,11 +29,35 @@ export default function PropiedadesPage() {
     const { data } = await query;
     setProperties((data as unknown as PropertyWithMedia[]) ?? []);
     setLoading(false);
-  };
+  }, [supabase, filter]);
 
   useEffect(() => {
+    let ignore = false;
+
+    async function fetchProperties() {
+      let query = supabase
+        .from("property")
+        .select("*, owner:owner_id(*), media:property_media(*)")
+        .order("title");
+
+      if (filter) {
+        query = query.eq("type", filter);
+      }
+
+      const { data } = await query;
+
+      if (!ignore) {
+        setProperties((data as unknown as PropertyWithMedia[]) ?? []);
+        setLoading(false);
+      }
+    }
+
     fetchProperties();
-  }, [filter]);
+
+    return () => {
+      ignore = true;
+    };
+  }, [supabase, filter]);
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -42,7 +66,7 @@ export default function PropiedadesPage() {
     await supabase.from("property").delete().eq("property_id", deleteId);
     setDeleteId(null);
     setDeleting(false);
-    fetchProperties();
+    loadProperties();
   };
 
   return (

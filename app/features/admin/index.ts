@@ -5,3 +5,7 @@ export { default as PropertyList } from "./components/PropertyList";
 export { default as PropertyForm } from "./components/PropertyForm";
 export { default as MediaUploader } from "./components/MediaUploader";
 export { default as ConfirmDialog } from "./components/ConfirmDialog";
+export { default as OwnerForm } from "./components/OwnerForm";
+export { default as OwnerList } from "./components/OwnerList";
+export { default as ClientForm } from "./components/ClientForm";
+export { default as ClientList } from "./components/ClientList";

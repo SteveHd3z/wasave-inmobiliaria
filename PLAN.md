@@ -634,7 +634,7 @@ VERIFICACION:
 
 ---
 
-### Tarea 8.2 - CRUD de propiedades en el panel admin
+### Tarea 8.2 - CRUD de propiedades en el panel admin       ok
 
 **Prompt para el agente de IA:**
 
@@ -689,7 +689,7 @@ VERIFICACION:
 
 ---
 
-### Tarea 8.3 - Gestion de owners en el panel admin
+### Tarea 8.3 - Gestion de owners en el panel admin      ok
 
 **Prompt para el agente de IA:**
 
@@ -735,7 +735,7 @@ VERIFICACION:
 
 ---
 
-### Tarea 8.4 - Gestion de clientes en el panel admin
+### Tarea 8.4 - Gestion de clientes en el panel admin    ok
 
 **Prompt para el agente de IA:**
 
