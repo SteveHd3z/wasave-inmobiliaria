@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@shared/utils/supabase";
-import { Button } from "@shared/components/ui";
 import MediaUploader from "./MediaUploader";
+import FormSection from "./FormSection";
+import { FORM_ID } from "./FormLayout";
 import type { Owner } from "@features/owner";
 import type { CreatePropertyInput, PropertyMedia } from "@features/properties";
 
@@ -99,6 +100,7 @@ export default function PropertyForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     const coverFile =
       coverSource?.type === "new" ? files[coverSource.index] : null;
     await onSubmit(form, files, coverFile, removedMediaIds);
@@ -111,156 +113,179 @@ export default function PropertyForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-            Titulo *
-          </label>
-          <input
-            name="title"
-            value={form.title}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 rounded-lg outline-none"
-            style={inputStyle}
-            placeholder="Titulo de la propiedad"
-          />
+    <form id={FORM_ID} onSubmit={handleSubmit} className="space-y-6">
+      <FormSection
+        title="Informacion principal"
+        description="Datos basicos que identifican la propiedad."
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
+              Titulo <span style={{ color: "#DC2626" }}>*</span>
+            </label>
+            <input
+              name="title"
+              value={form.title}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 rounded-lg outline-none"
+              style={inputStyle}
+              placeholder="Titulo de la propiedad"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
+              Tipo de propiedad
+            </label>
+            <select
+              name="type"
+              value={form.type ?? ""}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg outline-none"
+              style={inputStyle}
+            >
+              <option value="">Seleccionar tipo</option>
+              <option value="apartamento">Apartamento</option>
+              <option value="casa">Casa</option>
+              <option value="local">Local comercial</option>
+              <option value="oficina">Oficina</option>
+              <option value="lote">Lote</option>
+              <option value="bodega">Bodega</option>
+              <option value="finca">Finca</option>
+              <option value="cabana">Cabaña</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
+              Propietario <span style={{ color: "#DC2626" }}>*</span>
+            </label>
+            <select
+              name="owner_id"
+              value={form.owner_id}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 rounded-lg outline-none"
+              style={inputStyle}
+            >
+              <option value="">Seleccionar propietario</option>
+              {owners.map((o) => (
+                <option key={o.owner_id} value={o.owner_id}>
+                  {o.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
+      </FormSection>
 
-        <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-            Tipo
-          </label>
-          <select
-            name="type"
-            value={form.type ?? ""}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg outline-none"
-            style={inputStyle}
-          >
-            <option value="">Seleccionar tipo</option>
-            <option value="apartamento">Apartamento</option>
-            <option value="casa">Casa</option>
-            <option value="local">Local comercial</option>
-            <option value="oficina">Oficina</option>
-            <option value="lote">Lote</option>
-            <option value="bodega">Bodega</option>
-            <option value="finca">Finca</option>
-          </select>
+      <FormSection
+        title="Ubicacion y dimensiones"
+        description="Direccion fisica y tamano de la propiedad."
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
+              Area (m²)
+            </label>
+            <input
+              name="area"
+              type="number"
+              value={form.area ?? ""}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg outline-none"
+              style={inputStyle}
+              placeholder="0"
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
+              Direccion
+            </label>
+            <input
+              name="address"
+              value={form.address ?? ""}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg outline-none"
+              style={inputStyle}
+              placeholder="Direccion de la propiedad"
+            />
+          </div>
         </div>
+      </FormSection>
 
-        <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-            Owner *
-          </label>
-          <select
-            name="owner_id"
-            value={form.owner_id}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 rounded-lg outline-none"
-            style={inputStyle}
-          >
-            <option value="">Seleccionar owner</option>
-            {owners.map((o) => (
-              <option key={o.owner_id} value={o.owner_id}>
-                {o.name}
-              </option>
-            ))}
-          </select>
+      <FormSection
+        title="Precios"
+        description="Valores de referencia para la propiedad."
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
+              Precio base
+            </label>
+            <input
+              name="base_price"
+              type="number"
+              value={form.base_price ?? ""}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg outline-none"
+              style={inputStyle}
+              placeholder="0"
+              min="0"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
+              Precio de venta
+            </label>
+            <input
+              name="sale_price"
+              type="number"
+              value={form.sale_price ?? ""}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg outline-none"
+              style={inputStyle}
+              placeholder="0"
+              min="0"
+            />
+          </div>
         </div>
+      </FormSection>
 
-        <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-            Area (m2)
-          </label>
-          <input
-            name="area"
-            type="number"
-            value={form.area ?? ""}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg outline-none"
-            style={inputStyle}
-            placeholder="0"
-          />
-        </div>
+      <FormSection
+        title="Descripcion"
+        description="Detalla las caracteristicas y atractivos principales."
+      >
+        <textarea
+          name="description"
+          value={form.description ?? ""}
+          onChange={handleChange}
+          rows={5}
+          className="w-full px-4 py-3 rounded-lg outline-none resize-none"
+          style={inputStyle}
+          placeholder="Descripcion detallada de la propiedad"
+        />
+      </FormSection>
 
-        <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-            Precio Base
-          </label>
-          <input
-            name="base_price"
-            type="number"
-            value={form.base_price ?? ""}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg outline-none"
-            style={inputStyle}
-            placeholder="0"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-            Precio Venta
-          </label>
-          <input
-            name="sale_price"
-            type="number"
-            value={form.sale_price ?? ""}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg outline-none"
-            style={inputStyle}
-            placeholder="0"
-          />
-        </div>
-
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-            Direccion
-          </label>
-          <input
-            name="address"
-            value={form.address ?? ""}
-            onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg outline-none"
-            style={inputStyle}
-            placeholder="Direccion de la propiedad"
-          />
-        </div>
-
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-            Descripcion
-          </label>
-          <textarea
-            name="description"
-            value={form.description ?? ""}
-            onChange={handleChange}
-            rows={4}
-            className="w-full px-4 py-3 rounded-lg outline-none resize-none"
-            style={inputStyle}
-            placeholder="Descripcion de la propiedad"
-          />
-        </div>
-      </div>
-
-      <MediaUploader
-        files={files}
-        existingMedia={mediaList}
-        onFilesAdd={handleFilesAdd}
-        onRemoveNew={handleRemoveNew}
-        onRemoveExisting={handleRemoveExisting}
-        onSetCover={handleSetCover}
-        coverSource={coverSource}
-      />
-
-      <div className="flex justify-end gap-3">
-        <Button type="submit" size="lg" disabled={loading}>
-          {loading ? "Guardando..." : "Guardar propiedad"}
-        </Button>
-      </div>
+      <FormSection
+        title="Multimedia"
+        description="Imagenes y videos de la propiedad. Marca una como portada."
+      >
+        <MediaUploader
+          files={files}
+          existingMedia={mediaList}
+          onFilesAdd={handleFilesAdd}
+          onRemoveNew={handleRemoveNew}
+          onRemoveExisting={handleRemoveExisting}
+          onSetCover={handleSetCover}
+          coverSource={coverSource}
+        />
+      </FormSection>
     </form>
   );
 }

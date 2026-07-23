@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createBrowserClient } from "@shared/utils/supabase";
 import { validateMediaFiles } from "@shared/utils";
-import { PropertyForm } from "@features/admin";
+import { PropertyForm, FormLayout } from "@features/admin";
 import type { CreatePropertyInput, PropertyMedia } from "@features/properties";
 
 interface PropertyRow {
@@ -137,10 +137,16 @@ export default function EditarPropiedadPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>
-        Editar Propiedad
-      </h1>
+    <FormLayout
+      title="Editar Propiedad"
+      subtitle={`Modificando: ${property.title}`}
+      backHref="/admin/propiedades"
+      backLabel="Volver a propiedades"
+      cancelHref="/admin/propiedades"
+      loading={saving}
+      submitLabel="Guardar cambios"
+      maxWidth="xl"
+    >
       <PropertyForm
         initialData={{
           title: property.title,
@@ -157,6 +163,6 @@ export default function EditarPropiedadPage() {
         onSubmit={handleSubmit}
         loading={saving}
       />
-    </div>
+    </FormLayout>
   );
 }

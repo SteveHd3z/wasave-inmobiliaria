@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createBrowserClient } from "@shared/utils/supabase";
-import { ClientForm } from "@features/admin";
+import { ClientForm, FormLayout, FormSection } from "@features/admin";
 import type { CreateClientInput, Client } from "@features/client";
 
 export default function EditarClientePage() {
@@ -73,21 +73,32 @@ export default function EditarClientePage() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>
-        Editar Cliente
-      </h1>
-      <ClientForm
-        initialData={{
-          name: client.name,
-          last_name: client.last_name ?? undefined,
-          document_id: client.document_id ?? undefined,
-          email: client.email ?? undefined,
-          phone: client.phone ?? undefined,
-        }}
-        onSubmit={handleSubmit}
-        loading={saving}
-      />
-    </div>
+    <FormLayout
+      title="Editar Cliente"
+      subtitle={`Modificando: ${client.name}${client.last_name ? ` ${client.last_name}` : ""}`}
+      backHref="/admin/clientes"
+      backLabel="Volver a clientes"
+      cancelHref="/admin/clientes"
+      loading={saving}
+      submitLabel="Guardar cambios"
+      maxWidth="sm"
+    >
+      <FormSection
+        title="Datos del cliente"
+        description="Informacion basica de contacto e identificacion."
+      >
+        <ClientForm
+          initialData={{
+            name: client.name,
+            last_name: client.last_name ?? undefined,
+            document_id: client.document_id ?? undefined,
+            email: client.email ?? undefined,
+            phone: client.phone ?? undefined,
+          }}
+          onSubmit={handleSubmit}
+          loading={saving}
+        />
+      </FormSection>
+    </FormLayout>
   );
 }

@@ -14,3 +14,6 @@ export { default as AppointmentDetail } from "./components/AppointmentDetail";
 export { default as AppointmentFilters } from "./components/AppointmentFilters";
 export { default as StatusBadge } from "./components/StatusBadge";
 export { default as CertificateCard } from "./components/CertificateCard";
+export { default as PageHeader } from "./components/PageHeader";
+export { default as FormLayout } from "./components/FormLayout";
+export { default as FormSection } from "./components/FormSection";

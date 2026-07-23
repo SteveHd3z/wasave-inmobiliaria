@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@shared/utils/supabase";
 import { validateMediaFiles } from "@shared/utils";
-import { PropertyForm } from "@features/admin";
+import { PropertyForm, FormLayout } from "@features/admin";
 import type { CreatePropertyInput } from "@features/properties";
 
 export default function NuevaPropiedadPage() {
@@ -80,11 +80,17 @@ export default function NuevaPropiedadPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>
-        Nueva Propiedad
-      </h1>
+    <FormLayout
+      title="Nueva Propiedad"
+      subtitle="Publica una nueva propiedad con sus detalles y multimedia."
+      backHref="/admin/propiedades"
+      backLabel="Volver a propiedades"
+      cancelHref="/admin/propiedades"
+      loading={loading}
+      submitLabel="Guardar propiedad"
+      maxWidth="xl"
+    >
       <PropertyForm onSubmit={handleSubmit} loading={loading} />
-    </div>
+    </FormLayout>
   );
 }

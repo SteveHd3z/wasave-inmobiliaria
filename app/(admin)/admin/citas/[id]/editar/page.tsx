@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { createBrowserClient } from "@shared/utils/supabase";
-import { StatusBadge } from "@features/admin";
+import { FormLayout, FormSection, StatusBadge } from "@features/admin";
+import { FORM_ID } from "@features/admin/components/FormLayout";
 import type { Appointment, AppointmentStatus } from "@features/appointments";
 
 export default function EditarCitaPage() {
@@ -102,19 +102,8 @@ export default function EditarCitaPage() {
 
   if (!appointment) {
     return (
-      <div className="text-center py-12 space-y-4">
+      <div className="text-center py-12">
         <p style={{ color: "var(--muted)" }}>Cita no encontrada</p>
-        <Link
-          href="/admin/citas"
-          className="inline-block px-5 py-2.5 text-sm rounded-full font-semibold transition-all hover:opacity-90"
-          style={{
-            backgroundColor: "var(--primary)",
-            color: "white",
-            border: "none",
-          }}
-        >
-          Volver a citas
-        </Link>
       </div>
     );
   }
@@ -126,115 +115,90 @@ export default function EditarCitaPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <div className="flex items-center gap-3">
-        <Link
-          href={`/admin/citas/${id}`}
-          className="text-sm hover:opacity-80"
-          style={{ color: "var(--muted)" }}
+    <FormLayout
+      title="Editar Cita"
+      subtitle="Modifica la fecha, estado u observaciones de la cita."
+      backHref={`/admin/citas/${id}`}
+      backLabel="Volver al detalle"
+      cancelHref={`/admin/citas/${id}`}
+      loading={saving}
+      submitLabel="Guardar cambios"
+      maxWidth="md"
+    >
+      <form id={FORM_ID} onSubmit={handleSubmit} className="space-y-6">
+        <FormSection
+          title="Estado actual"
+          description="Visualiza el estado actual de la cita."
         >
-          ← Volver al detalle
-        </Link>
-      </div>
+          <div className="flex items-center gap-3">
+            <span className="text-sm" style={{ color: "var(--muted)" }}>
+              Estado:
+            </span>
+            <StatusBadge status={status} />
+          </div>
+        </FormSection>
 
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>
-          Editar Cita
-        </h1>
-        <StatusBadge status={status} />
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div
-          className="rounded-2xl p-6 space-y-6"
-          style={{
-            backgroundColor: "var(--surface)",
-            border: "1px solid var(--border-color)",
-          }}
+        <FormSection
+          title="Detalles de la cita"
+          description="Actualiza la fecha, estado u observaciones."
         >
-          <div>
-            <label
-              className="block text-sm font-medium mb-2"
-              style={{ color: "var(--foreground)" }}
-            >
-              Fecha y hora de visita *
-            </label>
-            <input
-              type="datetime-local"
-              value={visitDate}
-              onChange={(e) => setVisitDate(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-lg outline-none"
-              style={inputStyle}
-            />
-          </div>
+          <div className="space-y-5">
+            <div>
+              <label
+                className="block text-sm font-medium mb-2"
+                style={{ color: "var(--foreground)" }}
+              >
+                Fecha y hora de visita <span style={{ color: "#DC2626" }}>*</span>
+              </label>
+              <input
+                type="datetime-local"
+                value={visitDate}
+                onChange={(e) => setVisitDate(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-lg outline-none"
+                style={inputStyle}
+              />
+            </div>
 
-          <div>
-            <label
-              className="block text-sm font-medium mb-2"
-              style={{ color: "var(--foreground)" }}
-            >
-              Estado
-            </label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value as AppointmentStatus)}
-              className="w-full px-4 py-3 rounded-lg outline-none"
-              style={inputStyle}
-            >
-              <option value="pending">Pendiente</option>
-              <option value="confirmed">Confirmada</option>
-              <option value="cancelled">Cancelada</option>
-              <option value="completed">Completada</option>
-            </select>
-          </div>
+            <div>
+              <label
+                className="block text-sm font-medium mb-2"
+                style={{ color: "var(--foreground)" }}
+              >
+                Estado
+              </label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value as AppointmentStatus)}
+                className="w-full px-4 py-3 rounded-lg outline-none"
+                style={inputStyle}
+              >
+                <option value="pending">Pendiente</option>
+                <option value="confirmed">Confirmada</option>
+                <option value="cancelled">Cancelada</option>
+                <option value="completed">Completada</option>
+              </select>
+            </div>
 
-          <div>
-            <label
-              className="block text-sm font-medium mb-2"
-              style={{ color: "var(--foreground)" }}
-            >
-              Observaciones
-            </label>
-            <textarea
-              value={observations}
-              onChange={(e) => setObservations(e.target.value)}
-              rows={5}
-              className="w-full px-4 py-3 rounded-lg outline-none resize-none"
-              style={inputStyle}
-              placeholder="Notas, comentarios o detalles relevantes sobre la cita"
-            />
+            <div>
+              <label
+                className="block text-sm font-medium mb-2"
+                style={{ color: "var(--foreground)" }}
+              >
+                Observaciones
+              </label>
+              <textarea
+                value={observations}
+                onChange={(e) => setObservations(e.target.value)}
+                rows={5}
+                className="w-full px-4 py-3 rounded-lg outline-none resize-none"
+                style={inputStyle}
+                placeholder="Notas, comentarios o detalles relevantes sobre la cita"
+              />
+            </div>
           </div>
-        </div>
-
-        <div className="flex justify-end gap-3">
-          <Link href={`/admin/citas/${id}`}>
-            <button
-              type="button"
-              className="px-5 py-2.5 text-sm rounded-full font-semibold transition-all hover:opacity-90"
-              style={{
-                backgroundColor: "transparent",
-                color: "var(--foreground)",
-                border: "1px solid var(--border-color)",
-              }}
-            >
-              Cancelar
-            </button>
-          </Link>
-          <button
-            type="submit"
-            disabled={saving}
-            className="px-8 py-3 text-base rounded-full font-semibold transition-all hover:opacity-90 disabled:opacity-50"
-            style={{
-              backgroundColor: "var(--primary)",
-              color: "white",
-              border: "none",
-            }}
-          >
-            {saving ? "Guardando..." : "Guardar cambios"}
-          </button>
-        </div>
+        </FormSection>
       </form>
-    </div>
+    </FormLayout>
   );
 }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@shared/utils/supabase";
-import { OwnerForm } from "@features/admin";
+import { OwnerForm, FormLayout, FormSection } from "@features/admin";
 import type { CreateOwnerInput } from "@features/owner";
 
 export default function NuevoOwnerPage() {
@@ -31,11 +31,22 @@ export default function NuevoOwnerPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>
-        Nuevo Propietario
-      </h1>
-      <OwnerForm onSubmit={handleSubmit} loading={loading} />
-    </div>
+    <FormLayout
+      title="Nuevo Propietario"
+      subtitle="Registra un nuevo propietario en el sistema."
+      backHref="/admin/owners"
+      backLabel="Volver a propietarios"
+      cancelHref="/admin/owners"
+      loading={loading}
+      submitLabel="Guardar propietario"
+      maxWidth="sm"
+    >
+      <FormSection
+        title="Datos del propietario"
+        description="Informacion basica de contacto e identificacion."
+      >
+        <OwnerForm onSubmit={handleSubmit} loading={loading} />
+      </FormSection>
+    </FormLayout>
   );
 }

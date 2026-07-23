@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createBrowserClient } from "@shared/utils/supabase";
-import { OwnerForm } from "@features/admin";
+import { OwnerForm, FormLayout, FormSection } from "@features/admin";
 import type { CreateOwnerInput, Owner } from "@features/owner";
 
 export default function EditarOwnerPage() {
@@ -72,20 +72,31 @@ export default function EditarOwnerPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <h1 className="text-2xl font-bold" style={{ color: "var(--foreground)" }}>
-        Editar Propietario
-      </h1>
-      <OwnerForm
-        initialData={{
-          name: owner.name,
-          document_id: owner.document_id ?? undefined,
-          email: owner.email ?? undefined,
-          phone: owner.phone ?? undefined,
-        }}
-        onSubmit={handleSubmit}
-        loading={saving}
-      />
-    </div>
+    <FormLayout
+      title="Editar Propietario"
+      subtitle={`Modificando: ${owner.name}`}
+      backHref="/admin/owners"
+      backLabel="Volver a propietarios"
+      cancelHref="/admin/owners"
+      loading={saving}
+      submitLabel="Guardar cambios"
+      maxWidth="sm"
+    >
+      <FormSection
+        title="Datos del propietario"
+        description="Informacion basica de contacto e identificacion."
+      >
+        <OwnerForm
+          initialData={{
+            name: owner.name,
+            document_id: owner.document_id ?? undefined,
+            email: owner.email ?? undefined,
+            phone: owner.phone ?? undefined,
+          }}
+          onSubmit={handleSubmit}
+          loading={saving}
+        />
+      </FormSection>
+    </FormLayout>
   );
 }
