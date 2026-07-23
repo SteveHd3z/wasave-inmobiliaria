@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@shared/components/ui";
 import type { PropertyWithMedia } from "@features/properties";
 
@@ -58,11 +59,16 @@ export default function PropertyList({ properties, onDelete }: PropertyListProps
               <tr key={prop.property_id} style={{ borderBottom: "1px solid var(--border-color)" }}>
                 <td className="py-3 px-2">
                   {cover ? (
-                    <img
-                      src={cover.file_url}
-                      alt={prop.title}
-                      className="w-16 h-12 object-cover rounded-lg"
-                    />
+                    <div className="relative w-16 h-12 rounded-lg overflow-hidden">
+                      <Image
+                        src={cover.file_url}
+                        alt={prop.title}
+                        fill
+                        className="object-cover"
+                        sizes="64px"
+                        unoptimized
+                      />
+                    </div>
                   ) : (
                     <div
                       className="w-16 h-12 rounded-lg flex items-center justify-center"

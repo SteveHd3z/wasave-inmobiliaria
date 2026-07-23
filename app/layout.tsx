@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@shared/hooks";
+import { ErrorBoundary } from "@shared/components/ErrorBoundary";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -37,7 +38,9 @@ export default function RootLayout({
             `,
           }}
         />
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <ErrorBoundary>{children}</ErrorBoundary>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -9,3 +9,8 @@ export { default as OwnerForm } from "./components/OwnerForm";
 export { default as OwnerList } from "./components/OwnerList";
 export { default as ClientForm } from "./components/ClientForm";
 export { default as ClientList } from "./components/ClientList";
+export { default as AppointmentList } from "./components/AppointmentList";
+export { default as AppointmentDetail } from "./components/AppointmentDetail";
+export { default as AppointmentFilters } from "./components/AppointmentFilters";
+export { default as StatusBadge } from "./components/StatusBadge";
+export { default as CertificateCard } from "./components/CertificateCard";

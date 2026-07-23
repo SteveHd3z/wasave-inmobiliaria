@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from "react";
 import { useAuth } from "../hooks/useAuth";
-import type { AdminUser, AuthState, LoginInput } from "../types";
+import type { AuthState, LoginInput } from "../types";
 
 interface AuthContextValue extends AuthState {
   login: (input: LoginInput) => Promise<{ error: string | null }>;

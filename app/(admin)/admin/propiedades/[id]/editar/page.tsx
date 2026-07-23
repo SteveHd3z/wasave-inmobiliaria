@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createBrowserClient } from "@shared/utils/supabase";
+import { validateMediaFiles } from "@shared/utils";
 import { PropertyForm } from "@features/admin";
 import type { CreatePropertyInput, PropertyMedia } from "@features/properties";
 
@@ -58,6 +59,13 @@ export default function EditarPropiedadPage() {
   ) => {
     setSaving(true);
 
+    const mediaValidation = validateMediaFiles(files);
+    if (!mediaValidation.valid) {
+      alert(mediaValidation.error);
+      setSaving(false);
+      return;
+    }
+
     await supabase
       .from("property")
       .update({
@@ -86,7 +94,10 @@ export default function EditarPropiedadPage() {
 
       const { data: uploadData } = await supabase.storage
         .from("property-media")
-        .upload(path, file);
+        .upload(path, file, {
+          contentType: file.type,
+          upsert: false,
+        });
 
       if (uploadData) {
         const {

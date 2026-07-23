@@ -780,7 +780,7 @@ VERIFICACION:
 
 ---
 
-### Tarea 8.5 - Gestion de citas en el panel admin
+### Tarea 8.5 - Gestion de citas en el panel admin       ok
 
 **Prompt para el agente de IA:**
 
@@ -834,7 +834,7 @@ VERIFICACION:
 
 ---
 
-### Tarea 8.6 - Modulo de certificados de libertad y tradicion
+### Tarea 8.6 - Modulo de certificados de libertad y tradicion     ok  
 
 **Prompt para el agente de IA:**
 

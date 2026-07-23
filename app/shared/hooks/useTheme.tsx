@@ -1,8 +1,27 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useSyncExternalStore } from "react";
 
 type Theme = "light" | "dark";
+
+const STORAGE_KEY = "theme";
+
+const subscribe = (callback: () => void) => {
+  if (typeof window === "undefined") return () => {};
+  const handler = (e: StorageEvent) => {
+    if (e.key === STORAGE_KEY) callback();
+  };
+  window.addEventListener("storage", handler);
+  return () => window.removeEventListener("storage", handler);
+};
+
+const getSnapshot = (): Theme => {
+  if (typeof window === "undefined") return "light";
+  const saved = localStorage.getItem(STORAGE_KEY);
+  return saved === "dark" ? "dark" : "light";
+};
+
+const getServerSnapshot = (): Theme => "light";
 
 const ThemeContext = createContext<{
   theme: Theme;
@@ -13,25 +32,18 @@ const ThemeContext = createContext<{
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
-  const [mounted, setMounted] = useState(false);
+  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem("theme");
-    if (saved === "dark" || saved === "light") {
-      setTheme(saved);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
     document.documentElement.classList.toggle("dark", theme === "dark");
-    localStorage.setItem("theme", theme);
-  }, [theme, mounted]);
+    localStorage.setItem(STORAGE_KEY, theme);
+  }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    const next: Theme = theme === "light" ? "dark" : "light";
+    document.documentElement.classList.toggle("dark", next === "dark");
+    localStorage.setItem(STORAGE_KEY, next);
+    window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
   };
 
   return (

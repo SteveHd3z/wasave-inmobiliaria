@@ -3,4 +3,5 @@ export interface Propiedad {
   descripcion: string;
   icono: string;
   imagen: string;
+  slug: string;
 }

@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { SectionHeader } from "@shared/components/ui";
 import { useTheme } from "@shared/hooks";
-import { PROPIEDADES_RESIDENCIALES, COMPRA_VENTA_WHATSAPP_LINK } from "../constants";
+import { PROPIEDADES_RESIDENCIALES } from "../constants";
 
 export default function CompraVentaSection() {
   const { theme } = useTheme();
@@ -61,16 +62,14 @@ export default function CompraVentaSection() {
                   {prop.descripcion}
                 </p>
 
-                <a
-                  href={COMPRA_VENTA_WHATSAPP_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href={`/propiedades?type=${prop.slug}`}
                   className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 hover:gap-3 hover:opacity-90"
                   style={{ backgroundColor: "var(--primary)", color: "#ffffff" }}
                 >
                   Consultar disponibilidad
                   <span className="text-lg">→</span>
-                </a>
+                </Link>
               </div>
             </div>
           ))}
