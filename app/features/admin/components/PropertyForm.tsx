@@ -146,14 +146,9 @@ export default function PropertyForm({
               style={inputStyle}
             >
               <option value="">Seleccionar tipo</option>
-              <option value="apartamento">Apartamento</option>
-              <option value="casa">Casa</option>
-              <option value="local">Local comercial</option>
-              <option value="oficina">Oficina</option>
-              <option value="lote">Lote</option>
-              <option value="bodega">Bodega</option>
-              <option value="finca">Finca</option>
-              <option value="cabana">Cabaña</option>
+              <option value="casa">Casa Fincas</option>
+              <option value="lote">Lotes</option>
+              <option value="cabana">Cabañas</option>
             </select>
           </div>
 

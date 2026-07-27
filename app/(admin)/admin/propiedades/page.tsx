@@ -81,22 +81,25 @@ export default function PropiedadesPage() {
       </div>
 
       <div className="flex gap-3 flex-wrap">
-        {["", "apartamento", "casa", "local", "oficina", "lote", "bodega", "finca"].map(
-          (type) => (
-            <button
-              key={type}
-              onClick={() => setFilter(type)}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
-              style={{
-                backgroundColor: filter === type ? "var(--primary)" : "var(--surface)",
-                color: filter === type ? "white" : "var(--foreground)",
-                border: "1px solid var(--border-color)",
-              }}
-            >
-              {type === "" ? "Todos" : type.charAt(0).toUpperCase() + type.slice(1)}
-            </button>
-          )
-        )}
+        {[
+          { value: "", label: "Todos" },
+          { value: "casa", label: "Casa Fincas" },
+          { value: "lote", label: "Lotes" },
+          { value: "cabana", label: "Cabañas" },
+        ].map(({ value, label }) => (
+          <button
+            key={value}
+            onClick={() => setFilter(value)}
+            className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+            style={{
+              backgroundColor: filter === value ? "var(--primary)" : "var(--surface)",
+              color: filter === value ? "white" : "var(--foreground)",
+              border: "1px solid var(--border-color)",
+            }}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       {loading ? (

@@ -37,7 +37,7 @@ export default function MediaUploader({
         <label className="block text-sm font-medium" style={{ color: "var(--foreground)" }}>
           Imagenes y videos
         </label>
-        <Button variant="outline" size="sm" onClick={() => inputRef.current?.click()}>
+        <Button type="button" variant="outline" size="sm" onClick={() => inputRef.current?.click()}>
           Agregar archivos
         </Button>
         <input
@@ -68,6 +68,7 @@ export default function MediaUploader({
               />
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                 <button
+                  type="button"
                   onClick={() =>
                     onSetCover(
                       isCover ? null : media.media_id,
@@ -79,6 +80,7 @@ export default function MediaUploader({
                   {isCover ? "Quitar cover" : "Portada"}
                 </button>
                 <button
+                  type="button"
                   onClick={() => onRemoveExisting(media.media_id)}
                   className="px-2 py-1 text-xs rounded bg-red-500 text-white font-medium"
                 >
@@ -114,12 +116,14 @@ export default function MediaUploader({
               )}
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                 <button
+                  type="button"
                   onClick={() => onSetCover(null, isCover ? null : index)}
                   className="px-2 py-1 text-xs rounded bg-white text-black font-medium"
                 >
                   {isCover ? "Quitar cover" : "Portada"}
                 </button>
                 <button
+                  type="button"
                   onClick={() => onRemoveNew(index)}
                   className="px-2 py-1 text-xs rounded bg-red-500 text-white font-medium"
                 >

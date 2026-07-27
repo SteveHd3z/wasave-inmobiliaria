@@ -173,3 +173,31 @@ CREATE POLICY "appointment_update_auth" ON appointment
 
 CREATE POLICY "appointment_delete_auth" ON appointment
     FOR DELETE TO authenticated USING (true);
+
+-- 11. Permisos de tabla (GRANTs)
+-- Sin estos permisos, las politicas RLS no pueden operar porque
+-- PostgreSQL bloquea la operacion antes de evaluar la politica.
+
+-- owner
+GRANT SELECT ON owner TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON owner TO authenticated;
+
+-- client
+GRANT SELECT ON client TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON client TO authenticated;
+
+-- property
+GRANT SELECT ON property TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON property TO authenticated;
+
+-- property_media
+GRANT SELECT ON property_media TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON property_media TO authenticated;
+
+-- property_client
+GRANT SELECT ON property_client TO anon;
+GRANT SELECT, INSERT, DELETE ON property_client TO authenticated;
+
+-- appointment
+GRANT SELECT, INSERT ON appointment TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON appointment TO authenticated;

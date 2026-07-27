@@ -81,23 +81,36 @@ export default function EditarPropiedadPage() {
       .eq("property_id", id);
 
     if (removedMediaIds.length > 0) {
-      await supabase
+      const { error: deleteError } = await supabase
         .from("property_media")
         .delete()
         .in("media_id", removedMediaIds);
+
+      if (deleteError) {
+        console.error("Error al eliminar medios:", deleteError);
+        alert("Error al eliminar algunos archivos multimedia");
+      }
     }
+
+    let uploadErrors = 0;
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const ext = file.name.split(".").pop();
       const path = `${id}/${Date.now()}-${i}.${ext}`;
 
-      const { data: uploadData } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from("property-media")
         .upload(path, file, {
           contentType: file.type,
           upsert: false,
         });
+
+      if (uploadError) {
+        console.error("Error al subir archivo:", file.name, uploadError);
+        uploadErrors++;
+        continue;
+      }
 
       if (uploadData) {
         const {
@@ -105,13 +118,22 @@ export default function EditarPropiedadPage() {
         } = supabase.storage.from("property-media").getPublicUrl(uploadData.path);
 
         const isCover = coverFile === file;
-        await supabase.from("property_media").insert({
+        const { error: insertError } = await supabase.from("property_media").insert({
           file_url: publicUrl,
           cover_image: isCover,
           display_order: media.length + i,
           property_id: id,
         });
+
+        if (insertError) {
+          console.error("Error al guardar registro de media:", insertError);
+          uploadErrors++;
+        }
       }
+    }
+
+    if (uploadErrors > 0) {
+      alert(`Cambios guardados, pero hubo errores al subir ${uploadErrors} archivo(s). Revisa la consola para más detalles.`);
     }
 
     router.push("/admin/propiedades");
