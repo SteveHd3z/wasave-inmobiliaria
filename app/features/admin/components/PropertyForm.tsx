@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@shared/utils/supabase";
+import { CurrencyInput } from "@shared/components/ui";
 import MediaUploader from "./MediaUploader";
 import FormSection from "./FormSection";
 import { FORM_ID } from "./FormLayout";
@@ -58,13 +59,12 @@ export default function PropertyForm({
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]:
-        name === "area" || name === "base_price" || name === "sale_price"
-          ? value === ""
-            ? undefined
-            : Number(value)
-          : value,
+      [name]: name === "area" ? (value === "" ? undefined : Number(value)) : value,
     }));
+  };
+
+  const handleCurrencyChange = (name: string, value: number | undefined) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFilesAdd = (newFiles: File[]) => {
@@ -222,15 +222,12 @@ export default function PropertyForm({
             <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
               Precio base
             </label>
-            <input
+            <CurrencyInput
               name="base_price"
-              type="number"
-              value={form.base_price ?? ""}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg outline-none"
+              value={form.base_price}
+              onChange={handleCurrencyChange}
+              className="w-full"
               style={inputStyle}
-              placeholder="0"
-              min="0"
             />
           </div>
 
@@ -238,15 +235,12 @@ export default function PropertyForm({
             <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
               Precio de venta
             </label>
-            <input
+            <CurrencyInput
               name="sale_price"
-              type="number"
-              value={form.sale_price ?? ""}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg outline-none"
+              value={form.sale_price}
+              onChange={handleCurrencyChange}
+              className="w-full"
               style={inputStyle}
-              placeholder="0"
-              min="0"
             />
           </div>
         </div>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@shared/components/ui";
+import { formatCop } from "@shared/utils";
 import type { PropertyWithMedia } from "@features/properties";
 
 interface PropertyListProps {
@@ -85,10 +86,10 @@ export default function PropertyList({ properties, onDelete }: PropertyListProps
                   {prop.type ?? "-"}
                 </td>
                 <td className="py-3 px-2" style={{ color: "var(--foreground)" }}>
-                  {prop.base_price ? `$${prop.base_price.toLocaleString()}` : "-"}
+                  {formatCop(prop.base_price)}
                 </td>
                 <td className="py-3 px-2" style={{ color: "var(--foreground)" }}>
-                  {prop.sale_price ? `$${prop.sale_price.toLocaleString()}` : "-"}
+                  {formatCop(prop.sale_price)}
                 </td>
                 <td className="py-3 px-2" style={{ color: "var(--foreground)" }}>
                   {prop.owner?.name ?? "-"}
