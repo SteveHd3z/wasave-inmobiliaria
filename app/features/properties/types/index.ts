@@ -9,6 +9,7 @@ export interface Property {
   sale_price: number | null;
   address: string | null;
   type: string | null;
+  created_at: string;
   owner_id: string;
 }
 

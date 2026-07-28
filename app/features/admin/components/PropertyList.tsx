@@ -47,14 +47,14 @@ export default function PropertyList({ properties, onDelete }: PropertyListProps
             <th className="text-left py-3 px-2 font-medium" style={{ color: "var(--muted)" }}>
               Owner
             </th>
-            <th className="text-right py-3 px-2 font-medium" style={{ color: "var(--muted)" }}>
+            <th className="text-left py-3 px-2 font-medium" style={{ color: "var(--muted)" }}>
               Acciones
             </th>
           </tr>
         </thead>
         <tbody>
           {properties.map((prop) => {
-            const cover = prop.media?.find((m) => m.cover_image);
+            const cover = prop.media?.find((m) => m.cover_image) ?? prop.media?.[0];
             return (
               <tr key={prop.property_id} style={{ borderBottom: "1px solid var(--border-color)" }}>
                 <td className="py-3 px-2">
@@ -94,7 +94,7 @@ export default function PropertyList({ properties, onDelete }: PropertyListProps
                   {prop.owner?.name ?? "-"}
                 </td>
                 <td className="py-3 px-2">
-                  <div className="flex justify-end gap-2">
+                  <div className="flex justify-start gap-2">
                     <Link href={`/admin/propiedades/${prop.property_id}/editar`}>
                       <Button variant="outline" size="sm">
                         Editar

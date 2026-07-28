@@ -10,8 +10,7 @@ import { AppointmentForm, AppointmentConfirmation } from "@features/appointments
 import { generateWhatsAppMessage, getWhatsAppLink } from "@features/notifications";
 import type { AppointmentFormData } from "@features/appointments";
 import type { PropertyWithMedia } from "@features/properties";
-import type { Owner } from "@features/owner";
-import type { Client } from "@features/client";
+import type { Client } from "@/app/features/client";
 
 export default function PropertyDetailPage() {
   const supabase = createBrowserClient();
@@ -19,7 +18,6 @@ export default function PropertyDetailPage() {
   const id = params.id as string;
 
   const [property, setProperty] = useState<PropertyWithMedia | null>(null);
-  const [owner, setOwner] = useState<Owner | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [confirmation, setConfirmation] = useState<{
@@ -41,17 +39,7 @@ export default function PropertyDetailPage() {
 
       if (!ignore) {
         if (!error && data) {
-          const prop = data as unknown as PropertyWithMedia;
-          setProperty(prop);
-
-          if (prop.owner_id) {
-            const { data: ownerData } = await supabase
-              .from("owner")
-              .select("*")
-              .eq("owner_id", prop.owner_id)
-              .single();
-            if (ownerData) setOwner(ownerData as unknown as Owner);
-          }
+          setProperty(data as unknown as PropertyWithMedia);
         }
         setLoading(false);
       }
@@ -200,14 +188,6 @@ export default function PropertyDetailPage() {
     );
   }
 
-  const ownerWhatsAppLink = owner?.phone
-    ? `https://wa.me/${owner.phone.replace(/\D/g, "")}?text=${encodeURIComponent(
-        `Hola, estoy interesado en la propiedad "${property.title}". ¿Podria brindarme mas informacion?`
-      )}`
-    : `https://wa.me/?text=${encodeURIComponent(
-        `Hola, estoy interesado en la propiedad "${property.title}".`
-      )}`;
-
   return (
     <>
       <Header />
@@ -249,14 +229,6 @@ export default function PropertyDetailPage() {
                       {property.title}
                     </h1>
                   </div>
-                  {property.sale_price !== null && (
-                    <p
-                      className="text-3xl font-bold"
-                      style={{ color: "var(--primary)" }}
-                    >
-                      {`$${Number(property.sale_price).toLocaleString("es-CO")}`}
-                    </p>
-                  )}
                 </div>
 
                 {property.address && (
@@ -269,7 +241,7 @@ export default function PropertyDetailPage() {
                   </p>
                 )}
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mb-6">
                   {property.area !== null && (
                     <div
                       className="rounded-xl p-4"
@@ -289,28 +261,6 @@ export default function PropertyDetailPage() {
                         style={{ color: "var(--foreground)" }}
                       >
                         {`${property.area} m²`}
-                      </p>
-                    </div>
-                  )}
-                  {property.base_price !== null && (
-                    <div
-                      className="rounded-xl p-4"
-                      style={{
-                        backgroundColor: "var(--surface)",
-                        border: "1px solid var(--border-color)",
-                      }}
-                    >
-                      <p
-                        className="text-xs mb-1"
-                        style={{ color: "var(--muted)" }}
-                      >
-                        Precio base
-                      </p>
-                      <p
-                        className="text-lg font-semibold"
-                        style={{ color: "var(--foreground)" }}
-                      >
-                        {`$${Number(property.base_price).toLocaleString("es-CO")}`}
                       </p>
                     </div>
                   )}
@@ -354,47 +304,6 @@ export default function PropertyDetailPage() {
                     </p>
                   </div>
                 )}
-
-                {owner && (
-                  <div
-                    className="rounded-2xl p-6 mt-6"
-                    style={{
-                      backgroundColor: "var(--surface)",
-                      border: "1px solid var(--border-color)",
-                    }}
-                  >
-                    <h2
-                      className="text-lg font-semibold mb-4"
-                      style={{ color: "var(--foreground)" }}
-                    >
-                      Propietario
-                    </h2>
-                    <div className="space-y-2">
-                      <p
-                        className="font-medium"
-                        style={{ color: "var(--foreground)" }}
-                      >
-                        {owner.name}
-                      </p>
-                      {owner.email && (
-                        <p
-                          className="text-sm"
-                          style={{ color: "var(--muted)" }}
-                        >
-                          📧 {owner.email}
-                        </p>
-                      )}
-                      {owner.phone && (
-                        <p
-                          className="text-sm"
-                          style={{ color: "var(--muted)" }}
-                        >
-                          📞 {owner.phone}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -427,27 +336,6 @@ export default function PropertyDetailPage() {
                       Completa el formulario y nos pondremos en contacto para confirmar tu cita.
                     </p>
                     <AppointmentForm onSubmit={handleAppointmentSubmit} loading={submitting} />
-
-                    <div
-                      className="mt-6 pt-6 border-t text-center"
-                      style={{ borderColor: "var(--border-color)" }}
-                    >
-                      <p
-                        className="text-xs mb-2"
-                        style={{ color: "var(--muted)" }}
-                      >
-                        ¿Prefieres contactarnos directamente?
-                      </p>
-                      <a
-                        href={ownerWhatsAppLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block text-sm font-semibold hover:opacity-80"
-                        style={{ color: "#25D366" }}
-                      >
-                        Escribenos por WhatsApp →
-                      </a>
-                    </div>
                   </>
                 )}
               </div>

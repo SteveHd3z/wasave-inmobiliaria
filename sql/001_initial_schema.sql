@@ -35,6 +35,7 @@ CREATE TABLE property (
     sale_price NUMERIC,
     address VARCHAR(255),
     type VARCHAR(100),
+    created_at TIMESTAMP NOT NULL DEFAULT now(),
     owner_id UUID NOT NULL REFERENCES owner(owner_id)
 );
 

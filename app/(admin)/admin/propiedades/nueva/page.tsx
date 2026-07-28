@@ -105,7 +105,7 @@ export default function NuevaPropiedadPage() {
       backLabel="Volver a propiedades"
       cancelHref="/admin/propiedades"
       loading={loading}
-      submitLabel="Guardar propiedad"
+      submitLabel="Publicar propiedad"
       maxWidth="xl"
     >
       <PropertyForm onSubmit={handleSubmit} loading={loading} />
