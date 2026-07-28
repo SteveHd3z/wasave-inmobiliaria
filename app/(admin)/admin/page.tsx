@@ -38,7 +38,7 @@ export default function AdminDashboard() {
 
       const [propertiesRes, ownersRes, clientsRes, pendingRes, todayRes, upcomingRes] =
         await Promise.all([
-          supabase.from("properties").select("*", { count: "exact", head: true }),
+          supabase.from("property").select("*", { count: "exact", head: true }),
           supabase.from("owner").select("*", { count: "exact", head: true }),
           supabase.from("client").select("*", { count: "exact", head: true }),
           supabase
