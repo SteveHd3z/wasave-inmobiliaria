@@ -29,6 +29,26 @@ export function parseCopInput(value: string): number | undefined {
   return Number(digits);
 }
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function validateEmail(email: string): string | undefined {
+  if (!email.trim()) return undefined;
+  if (!EMAIL_REGEX.test(email)) return "Ingresa un correo valido";
+  return undefined;
+}
+
+const PHONE_REGEX = /^\d+$/;
+
+export function validatePhone(phone: string): string | undefined {
+  if (!phone.trim()) return undefined;
+  if (!PHONE_REGEX.test(phone.replace(/\s/g, ""))) return "El telefono solo debe contener numeros";
+  return undefined;
+}
+
+export function formatPhoneInput(value: string): string {
+  return value.replace(/\D/g, "");
+}
+
 const ALLOWED_MEDIA_TYPES = [
   "image/jpeg",
   "image/png",

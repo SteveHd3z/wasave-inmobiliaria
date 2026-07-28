@@ -2,12 +2,18 @@
 
 import { useState } from "react";
 import type { CreateClientInput } from "@features/client";
+import { validateEmail, validatePhone, formatPhoneInput } from "@shared/utils";
 import { FORM_ID } from "./FormLayout";
 
 interface ClientFormProps {
   initialData?: CreateClientInput;
   onSubmit: (data: CreateClientInput) => Promise<void>;
   loading?: boolean;
+}
+
+interface FormErrors {
+  email?: string;
+  phone?: string;
 }
 
 export default function ClientForm({ initialData, onSubmit, loading = false }: ClientFormProps) {
@@ -20,15 +26,35 @@ export default function ClientForm({ initialData, onSubmit, loading = false }: C
       phone: "",
     }
   );
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value || undefined }));
+
+    if (name === "email") {
+      setErrors((prev) => ({ ...prev, email: validateEmail(value) }));
+    }
+    if (name === "phone") {
+      const digitsOnly = formatPhoneInput(value);
+      setForm((prev) => ({ ...prev, phone: digitsOnly || undefined }));
+      setErrors((prev) => ({ ...prev, phone: validatePhone(digitsOnly) }));
+      return;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
+
+    const emailError = form.email ? validateEmail(form.email) : undefined;
+    const phoneError = form.phone ? validatePhone(form.phone) : undefined;
+
+    if (emailError || phoneError) {
+      setErrors({ email: emailError, phone: phoneError });
+      return;
+    }
+
     await onSubmit(form);
   };
 
@@ -36,6 +62,11 @@ export default function ClientForm({ initialData, onSubmit, loading = false }: C
     backgroundColor: "var(--background)",
     border: "1px solid var(--border-color)",
     color: "var(--foreground)",
+  };
+
+  const errorInputStyle = {
+    ...inputStyle,
+    border: "1px solid #DC2626",
   };
 
   return (
@@ -94,9 +125,14 @@ export default function ClientForm({ initialData, onSubmit, loading = false }: C
             value={form.email ?? ""}
             onChange={handleChange}
             className="w-full px-4 py-3 rounded-lg outline-none transition-colors"
-            style={inputStyle}
+            style={errors.email ? errorInputStyle : inputStyle}
             placeholder="correo@ejemplo.com"
           />
+          {errors.email && (
+            <p className="text-sm mt-1" style={{ color: "#DC2626" }}>
+              {errors.email}
+            </p>
+          )}
         </div>
 
         <div className="sm:col-span-2">
@@ -107,10 +143,16 @@ export default function ClientForm({ initialData, onSubmit, loading = false }: C
             name="phone"
             value={form.phone ?? ""}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg outline-colors"
-            style={inputStyle}
-            placeholder="300 123 4567"
+            className="w-full px-4 py-3 rounded-lg outline-none transition-colors"
+            style={errors.phone ? errorInputStyle : inputStyle}
+            placeholder="3001234567"
+            inputMode="numeric"
           />
+          {errors.phone && (
+            <p className="text-sm mt-1" style={{ color: "#DC2626" }}>
+              {errors.phone}
+            </p>
+          )}
         </div>
       </div>
     </form>

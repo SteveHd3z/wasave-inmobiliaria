@@ -2,12 +2,18 @@
 
 import { useState } from "react";
 import type { CreateOwnerInput } from "@features/owner";
+import { validateEmail, validatePhone, formatPhoneInput } from "@shared/utils";
 import { FORM_ID } from "./FormLayout";
 
 interface OwnerFormProps {
   initialData?: CreateOwnerInput;
   onSubmit: (data: CreateOwnerInput) => Promise<void>;
   loading?: boolean;
+}
+
+interface FormErrors {
+  email?: string;
+  phone?: string;
 }
 
 export default function OwnerForm({ initialData, onSubmit, loading = false }: OwnerFormProps) {
@@ -19,15 +25,37 @@ export default function OwnerForm({ initialData, onSubmit, loading = false }: Ow
       phone: "",
     }
   );
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    if (name === "phone") {
+      const digitsOnly = formatPhoneInput(value);
+      setForm((prev) => ({ ...prev, phone: digitsOnly || undefined }));
+      setErrors((prev) => ({ ...prev, phone: validatePhone(digitsOnly) }));
+      return;
+    }
+
     setForm((prev) => ({ ...prev, [name]: value || undefined }));
+
+    if (name === "email") {
+      setErrors((prev) => ({ ...prev, email: validateEmail(value) }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
+
+    const emailError = form.email ? validateEmail(form.email) : undefined;
+    const phoneError = form.phone ? validatePhone(form.phone) : undefined;
+
+    if (emailError || phoneError) {
+      setErrors({ email: emailError, phone: phoneError });
+      return;
+    }
+
     await onSubmit(form);
   };
 
@@ -35,6 +63,11 @@ export default function OwnerForm({ initialData, onSubmit, loading = false }: Ow
     backgroundColor: "var(--background)",
     border: "1px solid var(--border-color)",
     color: "var(--foreground)",
+  };
+
+  const errorInputStyle = {
+    ...inputStyle,
+    border: "1px solid #DC2626",
   };
 
   return (
@@ -79,9 +112,14 @@ export default function OwnerForm({ initialData, onSubmit, loading = false }: Ow
             value={form.email ?? ""}
             onChange={handleChange}
             className="w-full px-4 py-3 rounded-lg outline-none transition-colors"
-            style={inputStyle}
+            style={errors.email ? errorInputStyle : inputStyle}
             placeholder="correo@ejemplo.com"
           />
+          {errors.email && (
+            <p className="text-sm mt-1" style={{ color: "#DC2626" }}>
+              {errors.email}
+            </p>
+          )}
         </div>
 
         <div>
@@ -93,9 +131,15 @@ export default function OwnerForm({ initialData, onSubmit, loading = false }: Ow
             value={form.phone ?? ""}
             onChange={handleChange}
             className="w-full px-4 py-3 rounded-lg outline-none transition-colors"
-            style={inputStyle}
-            placeholder="300 123 4567"
+            style={errors.phone ? errorInputStyle : inputStyle}
+            placeholder="3001234567"
+            inputMode="numeric"
           />
+          {errors.phone && (
+            <p className="text-sm mt-1" style={{ color: "#DC2626" }}>
+              {errors.phone}
+            </p>
+          )}
         </div>
       </div>
     </form>
