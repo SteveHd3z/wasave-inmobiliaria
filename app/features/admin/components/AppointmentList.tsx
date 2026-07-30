@@ -89,25 +89,13 @@ export default function AppointmentList({ appointments, onDelete }: AppointmentL
                       Ver
                     </button>
                   </Link>
-                  <Link href={`/admin/citas/${apt.appointment_id}/editar`}>
-                    <button
-                      className="px-3 py-1.5 text-sm rounded-full font-semibold transition-all hover:opacity-90"
-                      style={{
-                        backgroundColor: "var(--surface)",
-                        color: "var(--foreground)",
-                        border: "1px solid var(--border-color)",
-                      }}
-                    >
-                      Editar
-                    </button>
-                  </Link>
                   <button
                     onClick={() => onDelete(apt.appointment_id)}
                     className="px-3 py-1.5 text-sm rounded-full font-semibold transition-all hover:opacity-90"
                     style={{
                       backgroundColor: "transparent",
-                      color: "var(--foreground)",
-                      border: "none",
+                      color: "#991B1B",
+                      border: "1px solid #991B1B",
                     }}
                   >
                     Eliminar

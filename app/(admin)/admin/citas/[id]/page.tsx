@@ -92,6 +92,28 @@ export default function CitaDetailPage() {
     router.push("/admin/citas");
   };
 
+  const handleUpdate = async (values: {
+    visit_date: string;
+    status: "pending" | "confirmed" | "cancelled" | "completed";
+    observations: string | null;
+  }) => {
+    const { error } = await supabase
+      .from("appointment")
+      .update({
+        visit_date: values.visit_date,
+        status: values.status,
+        observations: values.observations,
+      })
+      .eq("appointment_id", id);
+
+    if (error) {
+      alert("Error al actualizar la cita");
+      throw error;
+    }
+
+    await refetch();
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -144,6 +166,7 @@ export default function CitaDetailPage() {
         onCancel={handleCancel}
         onComplete={handleComplete}
         onDelete={handleDelete}
+        onUpdate={handleUpdate}
       />
     </div>
   );

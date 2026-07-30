@@ -52,6 +52,19 @@ export function generateWhatsAppMessage(data: NotificationData): string {
         "Wasave Inmobiliaria",
       ].join("\n");
 
+    case "reminder":
+      return [
+        `¡Hola ${clientName}!`,
+        "",
+        "Te recordamos tu cita programada:",
+        `📅 Fecha: ${visitDate}`,
+        "",
+        "Te esperamos. Si necesitas reprogramar, avísanos con anticipación.",
+        "",
+        "Saludos,",
+        "Wasave Inmobiliaria",
+      ].join("\n");
+
     default:
       return `Hola ${clientName}, tenemos una actualización sobre tu cita. Contáctanos para más información.`;
   }

@@ -4,5 +4,5 @@ import type { Client } from "@/app/features/client/types";
 export interface NotificationData {
   appointment: Appointment;
   client: Client;
-  action: "created" | "updated" | "cancelled";
+  action: "created" | "updated" | "cancelled" | "reminder";
 }
