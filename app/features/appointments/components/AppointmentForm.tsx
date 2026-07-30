@@ -5,7 +5,7 @@ import { useState } from "react";
 export interface AppointmentFormData {
   name: string;
   last_name: string;
-  document_id: string;
+  document_id?: string;
   phone: string;
   email: string;
   visit_date: string;
@@ -49,7 +49,6 @@ export default function AppointmentForm({ onSubmit, loading = false }: Appointme
 
     if (!form.name.trim()) newErrors.name = "El nombre es requerido";
     if (!form.last_name.trim()) newErrors.last_name = "El apellido es requerido";
-    if (!form.document_id.trim()) newErrors.document_id = "El documento es requerido";
     if (!form.phone.trim()) {
       newErrors.phone = "El telefono es requerido";
     } else if (!phoneRegex.test(form.phone)) {
@@ -131,7 +130,6 @@ export default function AppointmentForm({ onSubmit, loading = false }: Appointme
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {renderField("name", "Nombre", "text", "Tu nombre")}
         {renderField("last_name", "Apellido", "text", "Tu apellido")}
-        {renderField("document_id", "Documento", "text", "Cedula")}
         {renderField("phone", "Telefono", "tel", "300 123 4567")}
         {renderField("email", "Email", "email", "correo@ejemplo.com")}
         {renderField("visit_date", "Fecha y hora", "datetime-local", "", true)}

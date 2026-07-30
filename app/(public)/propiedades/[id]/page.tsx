@@ -7,6 +7,7 @@ import { Header, Footer, WhatsAppButton } from "@shared/components/layout";
 import { createBrowserClient } from "@shared/utils/supabase";
 import { PropertyGallery } from "@features/properties";
 import { AppointmentForm, AppointmentConfirmation } from "@features/appointments";
+import { createAppointmentAction } from "@features/appointments/actions";
 import { generateWhatsAppMessage, getWhatsAppLink } from "@features/notifications";
 import type { AppointmentFormData } from "@features/appointments";
 import type { PropertyWithMedia } from "@features/properties";
@@ -56,65 +57,16 @@ export default function PropertyDetailPage() {
     if (!property) return;
     setSubmitting(true);
 
-    let clientId: string;
+    const result = await createAppointmentAction(formData, property.property_id);
 
-    const { data: existingClient } = await supabase
-      .from("client")
-      .select("*")
-      .eq("email", formData.email)
-      .maybeSingle();
-
-    if (existingClient) {
-      clientId = (existingClient as unknown as Client).client_id;
-    } else {
-      const { data: newClient, error: createError } = await supabase
-        .from("client")
-        .insert({
-          name: formData.name,
-          last_name: formData.last_name || null,
-          document_id: formData.document_id || null,
-          phone: formData.phone,
-          email: formData.email,
-        })
-        .select()
-        .single();
-
-      if (createError || !newClient) {
-        alert("Error al registrar el cliente. Intentalo de nuevo.");
-        setSubmitting(false);
-        return;
-      }
-      clientId = (newClient as unknown as Client).client_id;
-    }
-
-    const visitDateISO = new Date(formData.visit_date).toISOString();
-
-    const { data: newAppointment, error: appointmentError } = await supabase
-      .from("appointment")
-      .insert({
-        visit_date: visitDateISO,
-        status: "pending",
-        observations: formData.observations || null,
-        client_id: clientId,
-      })
-      .select()
-      .single();
-
-    if (appointmentError || !newAppointment) {
-      alert("Error al agendar la cita. Intentalo de nuevo.");
+    if (!result.success || !result.data) {
+      alert(result.error || "Error al agendar la cita.");
       setSubmitting(false);
       return;
     }
 
-    await supabase
-      .from("property_client")
-      .upsert(
-        { property_id: property.property_id, client_id: clientId },
-        { onConflict: "property_id,client_id" }
-      );
-
     const clientForMessage: Client = {
-      client_id: clientId,
+      client_id: result.data.clientId,
       name: formData.name,
       last_name: formData.last_name || null,
       document_id: formData.document_id || null,
@@ -124,13 +76,13 @@ export default function PropertyDetailPage() {
 
     const message = generateWhatsAppMessage({
       appointment: {
-        appointment_id: (newAppointment as unknown as { appointment_id: string }).appointment_id,
-        visit_date: visitDateISO,
+        appointment_id: result.data.appointmentId,
+        visit_date: new Date(formData.visit_date).toISOString(),
         status: "pending",
         observations: formData.observations || null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        client_id: clientId,
+        client_id: result.data.clientId,
       },
       client: clientForMessage,
       action: "created",

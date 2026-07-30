@@ -60,14 +60,16 @@ export default function AppointmentConfirmation({
             {`${data.name} ${data.last_name}`}
           </p>
         </div>
-        <div>
-          <p className="text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>
-            Documento
-          </p>
-          <p className="text-sm" style={{ color: "var(--foreground)" }}>
-            {data.document_id}
-          </p>
-        </div>
+        {data.document_id && (
+          <div>
+            <p className="text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>
+              Documento
+            </p>
+            <p className="text-sm" style={{ color: "var(--foreground)" }}>
+              {data.document_id}
+            </p>
+          </div>
+        )}
         <div>
           <p className="text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>
             Contacto
