@@ -287,7 +287,11 @@ export default function PropertyDetailPage() {
                     >
                       Completa el formulario y nos pondremos en contacto para confirmar tu cita.
                     </p>
-                    <AppointmentForm onSubmit={handleAppointmentSubmit} loading={submitting} />
+                    <AppointmentForm
+                      propertyId={property.property_id}
+                      onSubmit={handleAppointmentSubmit}
+                      loading={submitting}
+                    />
                   </>
                 )}
               </div>

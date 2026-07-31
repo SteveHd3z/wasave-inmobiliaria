@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import AppointmentDatePicker from "./AppointmentDatePicker";
 
 export interface AppointmentFormData {
   name: string;
@@ -13,6 +14,7 @@ export interface AppointmentFormData {
 }
 
 interface AppointmentFormProps {
+  propertyId: string;
   onSubmit: (data: AppointmentFormData) => Promise<void>;
   loading?: boolean;
 }
@@ -30,7 +32,7 @@ const initialData: AppointmentFormData = {
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^[\d\s+\-()]{7,20}$/;
 
-export default function AppointmentForm({ onSubmit, loading = false }: AppointmentFormProps) {
+export default function AppointmentForm({ propertyId, onSubmit, loading = false }: AppointmentFormProps) {
   const [form, setForm] = useState<AppointmentFormData>(initialData);
   const [errors, setErrors] = useState<Partial<Record<keyof AppointmentFormData, string>>>({});
 
@@ -60,10 +62,12 @@ export default function AppointmentForm({ onSubmit, loading = false }: Appointme
       newErrors.email = "Email invalido";
     }
     if (!form.visit_date) {
-      newErrors.visit_date = "La fecha es requerida";
+      newErrors.visit_date = "Selecciona un día y horario disponibles";
     } else {
       const visitDate = new Date(form.visit_date);
-      if (visitDate < new Date()) {
+      if (Number.isNaN(visitDate.getTime())) {
+        newErrors.visit_date = "La fecha seleccionada no es válida";
+      } else if (visitDate < new Date()) {
         newErrors.visit_date = "La fecha debe ser futura";
       }
     }
@@ -126,13 +130,26 @@ export default function AppointmentForm({ onSubmit, loading = false }: Appointme
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {renderField("name", "Nombre", "text", "Tu nombre")}
         {renderField("last_name", "Apellido", "text", "Tu apellido")}
         {renderField("phone", "Telefono", "tel", "300 123 4567")}
         {renderField("email", "Email", "email", "correo@ejemplo.com")}
-        {renderField("visit_date", "Fecha y hora", "datetime-local", "", true)}
+      </div>
+
+      <div>
+        <AppointmentDatePicker
+          propertyId={propertyId}
+          value={form.visit_date}
+          onChange={(iso) => {
+            setForm((prev) => ({ ...prev, visit_date: iso }));
+            if (errors.visit_date) {
+              setErrors((prev) => ({ ...prev, visit_date: undefined }));
+            }
+          }}
+          error={errors.visit_date}
+        />
       </div>
 
       <div>
