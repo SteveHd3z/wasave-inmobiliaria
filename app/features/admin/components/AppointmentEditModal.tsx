@@ -124,7 +124,7 @@ export default function AppointmentEditModal({
               Editar cita
             </h2>
             <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
-              Modifica la fecha, estado u observaciones.
+              Modifica la fecha o el estado de la cita.
             </p>
           </div>
           <button
@@ -202,12 +202,15 @@ export default function AppointmentEditModal({
             </label>
             <textarea
               value={observations}
-              onChange={(e) => setObservations(e.target.value)}
+              readOnly
               rows={4}
-              className="w-full px-4 py-3 rounded-lg outline-none resize-none"
-              style={inputStyle}
+              className="w-full px-4 py-3 rounded-lg outline-none resize-none cursor-not-allowed"
+              style={{ ...inputStyle, opacity: 0.7 }}
               placeholder="Notas, comentarios o detalles relevantes sobre la cita"
             />
+            <p className="text-xs mt-1.5" style={{ color: "var(--muted)" }}>
+              Las observaciones solo pueden ser definidas por el cliente al agendar la cita.
+            </p>
           </div>
 
           {error && (

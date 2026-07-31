@@ -102,7 +102,6 @@ export default function CitaDetailPage() {
       .update({
         visit_date: values.visit_date,
         status: values.status,
-        observations: values.observations,
       })
       .eq("appointment_id", id);
 
