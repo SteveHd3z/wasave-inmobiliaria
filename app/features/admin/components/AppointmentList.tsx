@@ -33,10 +33,7 @@ export default function AppointmentList({ appointments, onDelete }: AppointmentL
               Cliente
             </th>
             <th className="text-left py-3 px-2 font-medium" style={{ color: "var(--muted)" }}>
-              Email
-            </th>
-            <th className="text-left py-3 px-2 font-medium" style={{ color: "var(--muted)" }}>
-              Telefono
+              Propiedad
             </th>
             <th className="text-left py-3 px-2 font-medium" style={{ color: "var(--muted)" }}>
               Estado
@@ -50,61 +47,84 @@ export default function AppointmentList({ appointments, onDelete }: AppointmentL
           </tr>
         </thead>
         <tbody>
-          {appointments.map((apt) => (
-            <tr key={apt.appointment_id} style={{ borderBottom: "1px solid var(--border-color)" }}>
-              <td className="py-3 px-2 font-medium" style={{ color: "var(--foreground)" }}>
-                {formatAppointmentDateTime(apt.visit_date)}
-              </td>
-              <td className="py-3 px-2" style={{ color: "var(--foreground)" }}>
-                {apt.client
-                  ? `${apt.client.name}${apt.client.last_name ? ` ${apt.client.last_name}` : ""}`
-                  : "Sin cliente"}
-              </td>
-              <td className="py-3 px-2" style={{ color: "var(--foreground)" }}>
-                {apt.client?.email ?? "-"}
-              </td>
-              <td className="py-3 px-2" style={{ color: "var(--foreground)" }}>
-                {apt.client?.phone ?? "-"}
-              </td>
-              <td className="py-3 px-2">
-                <StatusBadge status={apt.status} />
-              </td>
-              <td
-                className="py-3 px-2 max-w-xs truncate"
-                style={{ color: "var(--foreground)" }}
-                title={apt.observations ?? ""}
-              >
-                {apt.observations ?? "-"}
-              </td>
-              <td className="py-3 px-2">
-                <div className="flex justify-end gap-2">
-                  <Link href={`/admin/citas/${apt.appointment_id}`}>
+          {appointments.map((apt) => {
+            const property = apt.properties?.[0];
+            const extraCount = (apt.properties?.length ?? 0) - 1;
+            return (
+              <tr key={apt.appointment_id} style={{ borderBottom: "1px solid var(--border-color)" }}>
+                <td className="py-3 px-2 font-medium" style={{ color: "var(--foreground)" }}>
+                  {formatAppointmentDateTime(apt.visit_date)}
+                </td>
+                <td className="py-3 px-2" style={{ color: "var(--foreground)" }}>
+                  {apt.client
+                    ? `${apt.client.name}${apt.client.last_name ? ` ${apt.client.last_name}` : ""}`
+                    : "Sin cliente"}
+                </td>
+                <td className="py-3 px-2" style={{ color: "var(--foreground)" }}>
+                  {property ? (
+                    <div className="flex flex-col">
+                      <span className="font-medium">{property.title}</span>
+                      {property.address && (
+                        <span
+                          className="text-xs"
+                          style={{ color: "var(--muted)" }}
+                        >
+                          {property.address}
+                        </span>
+                      )}
+                      {extraCount > 0 && (
+                        <span
+                          className="text-xs"
+                          style={{ color: "var(--muted)" }}
+                        >
+                          +{extraCount} más
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <span style={{ color: "var(--muted)" }}>Sin propiedad</span>
+                  )}
+                </td>
+                <td className="py-3 px-2">
+                  <StatusBadge status={apt.status} />
+                </td>
+                <td
+                  className="py-3 px-2 max-w-xs truncate"
+                  style={{ color: "var(--foreground)" }}
+                  title={apt.observations ?? ""}
+                >
+                  {apt.observations ?? "-"}
+                </td>
+                <td className="py-3 px-2">
+                  <div className="flex justify-end gap-2">
+                    <Link href={`/admin/citas/${apt.appointment_id}`}>
+                      <button
+                        className="px-3 py-1.5 text-sm rounded-full font-semibold transition-all hover:opacity-90"
+                        style={{
+                          backgroundColor: "transparent",
+                          color: "var(--primary)",
+                          border: "1px solid var(--primary)",
+                        }}
+                      >
+                        Ver
+                      </button>
+                    </Link>
                     <button
+                      onClick={() => onDelete(apt.appointment_id)}
                       className="px-3 py-1.5 text-sm rounded-full font-semibold transition-all hover:opacity-90"
                       style={{
                         backgroundColor: "transparent",
-                        color: "var(--primary)",
-                        border: "1px solid var(--primary)",
+                        color: "#991B1B",
+                        border: "1px solid #991B1B",
                       }}
                     >
-                      Ver
+                      Eliminar
                     </button>
-                  </Link>
-                  <button
-                    onClick={() => onDelete(apt.appointment_id)}
-                    className="px-3 py-1.5 text-sm rounded-full font-semibold transition-all hover:opacity-90"
-                    style={{
-                      backgroundColor: "transparent",
-                      color: "#991B1B",
-                      border: "1px solid #991B1B",
-                    }}
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

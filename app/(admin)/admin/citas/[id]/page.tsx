@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { createBrowserClient } from "@shared/utils/supabase";
 import { AppointmentDetail } from "@features/admin";
+import { fetchPropertiesForClients } from "@features/appointments/utils/propertyLookup";
 import type { AppointmentWithClient } from "@features/appointments";
 
 export default function CitaDetailPage() {
@@ -28,12 +29,17 @@ export default function CitaDetailPage() {
         .eq("appointment_id", id)
         .single();
 
-      if (!ignore) {
-        if (!error && data) {
-          setAppointment(data as unknown as AppointmentWithClient);
-        }
-        setLoading(false);
+      if (ignore) return;
+
+      if (!error && data) {
+        const raw = data as unknown as Omit<AppointmentWithClient, "properties">;
+        const propertiesByClient = await fetchPropertiesForClients([raw.client_id]);
+        setAppointment({
+          ...raw,
+          properties: propertiesByClient.get(raw.client_id) ?? [],
+        });
       }
+      setLoading(false);
     }
 
     fetchAppointment();
@@ -51,7 +57,12 @@ export default function CitaDetailPage() {
       .single();
 
     if (!error && data) {
-      setAppointment(data as unknown as AppointmentWithClient);
+      const raw = data as unknown as Omit<AppointmentWithClient, "properties">;
+      const propertiesByClient = await fetchPropertiesForClients([raw.client_id]);
+      setAppointment({
+        ...raw,
+        properties: propertiesByClient.get(raw.client_id) ?? [],
+      });
     }
   };
 

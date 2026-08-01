@@ -1,4 +1,5 @@
 import type { Client } from "@/app/features/client/types";
+import type { Property } from "@features/properties";
 
 export interface Appointment {
   appointment_id: string;
@@ -12,6 +13,7 @@ export interface Appointment {
 
 export interface AppointmentWithClient extends Appointment {
   client: Client;
+  properties: Property[];
 }
 
 export interface CreateAppointmentInput {

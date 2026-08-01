@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import StatusBadge from "./StatusBadge";
 import ConfirmDialog from "./ConfirmDialog";
 import AppointmentEditModal from "./AppointmentEditModal";
 import { generateWhatsAppMessage, getWhatsAppLink } from "@features/notifications";
-import { formatAppointmentDateTime } from "@shared/utils";
+import { formatAppointmentDateTime, formatCop } from "@shared/utils";
 import type {
   Appointment,
   AppointmentStatus,
   AppointmentWithClient,
 } from "@features/appointments";
+import type { Property } from "@features/properties";
 
 interface AppointmentDetailProps {
   appointment: AppointmentWithClient;
@@ -154,6 +156,8 @@ export default function AppointmentDetail({
           </p>
         </div>
       </div>
+
+      <PropertySection properties={appointment.properties} />
 
       <div className="rounded-2xl p-6" style={cardStyle}>
         <h2 className="text-lg font-semibold mb-4" style={{ color: "var(--foreground)" }}>
@@ -419,6 +423,122 @@ export default function AppointmentDetail({
         onClose={() => setEditOpen(false)}
         onSave={onUpdate}
       />
+    </div>
+  );
+}
+
+function PropertySection({ properties }: { properties: Property[] }) {
+  return (
+    <div className="rounded-2xl p-6" style={cardStyle}>
+      <h2 className="text-lg font-semibold mb-4" style={{ color: "var(--foreground)" }}>
+        Propiedad de interes
+      </h2>
+
+      {properties.length === 0 ? (
+        <p className="text-sm" style={{ color: "var(--muted)" }}>
+          No hay propiedades asociadas a este cliente.
+        </p>
+      ) : (
+        <div className="space-y-4">
+          {properties.map((property) => (
+            <div
+              key={property.property_id}
+              className="rounded-xl p-4"
+              style={{
+                backgroundColor: "var(--background)",
+                border: "1px solid var(--border-color)",
+              }}
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {property.type && (
+                      <span
+                        className="inline-block px-2 py-0.5 rounded-full text-xs font-semibold"
+                        style={{
+                          backgroundColor: "var(--primary-light)",
+                          color: "var(--primary-dark)",
+                        }}
+                      >
+                        {property.type.charAt(0).toUpperCase() + property.type.slice(1)}
+                      </span>
+                    )}
+                    <h3
+                      className="text-base font-semibold truncate"
+                      style={{ color: "var(--foreground)" }}
+                    >
+                      {property.title}
+                    </h3>
+                  </div>
+                  {property.address && (
+                    <p
+                      className="text-sm mt-1 flex items-center gap-1.5"
+                      style={{ color: "var(--muted)" }}
+                    >
+                      <span aria-hidden="true">📍</span>
+                      {property.address}
+                    </p>
+                  )}
+                </div>
+
+                <Link
+                  href={`/admin/propiedades/${property.property_id}/editar`}
+                  className="px-4 py-1.5 text-sm rounded-full font-semibold transition-all hover:opacity-90 inline-flex items-center gap-1.5"
+                  style={{
+                    backgroundColor: "transparent",
+                    color: "var(--primary)",
+                    border: "1px solid var(--primary)",
+                  }}
+                >
+                  Ver propiedad
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3">
+                {property.area !== null && (
+                  <div>
+                    <p className="text-xs" style={{ color: "var(--muted)" }}>
+                      Area
+                    </p>
+                    <p
+                      className="text-sm font-semibold"
+                      style={{ color: "var(--foreground)" }}
+                    >
+                      {property.area} m²
+                    </p>
+                  </div>
+                )}
+                {property.sale_price !== null && property.sale_price > 0 && (
+                  <div>
+                    <p className="text-xs" style={{ color: "var(--muted)" }}>
+                      Precio venta
+                    </p>
+                    <p
+                      className="text-sm font-semibold"
+                      style={{ color: "var(--foreground)" }}
+                    >
+                      {formatCop(property.sale_price)}
+                    </p>
+                  </div>
+                )}
+                {property.base_price !== null && property.base_price > 0 && (
+                  <div>
+                    <p className="text-xs" style={{ color: "var(--muted)" }}>
+                      Precio base
+                    </p>
+                    <p
+                      className="text-sm font-semibold"
+                      style={{ color: "var(--foreground)" }}
+                    >
+                      {formatCop(property.base_price)}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
