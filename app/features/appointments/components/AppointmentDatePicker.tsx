@@ -17,10 +17,11 @@ import type { AppointmentStatus } from "@features/appointments";
 const BUSINESS_START_HOUR = 8;
 const BUSINESS_END_HOUR = 18;
 const APPOINTMENT_DURATION_HOURS = 2;
+const SLOT_STEP_HOURS = 2;
 
 const START_HOURS: number[] = Array.from(
-  { length: BUSINESS_END_HOUR - BUSINESS_START_HOUR - 1 },
-  (_, i) => BUSINESS_START_HOUR + i
+  { length: (BUSINESS_END_HOUR - BUSINESS_START_HOUR) / SLOT_STEP_HOURS },
+  (_, i) => BUSINESS_START_HOUR + i * SLOT_STEP_HOURS
 );
 
 interface DayOccupancy {
@@ -526,48 +527,87 @@ export default function AppointmentDatePicker({
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {slots.map(({ hour, available, reason }) => {
                             const isSelected = modalSelectedHour === hour;
+                            const isOccupied = reason === "occupied";
+                            const isPast = reason === "past";
+
+                            let bg = "var(--background)";
+                            let color = "var(--foreground)";
+                            let border = "1px solid var(--border-color)";
+                            if (isSelected) {
+                              bg = "var(--primary)";
+                              color = "white";
+                              border = "1px solid var(--primary)";
+                            } else if (isOccupied) {
+                              bg = "#FEE2E2";
+                              color = "#991B1B";
+                              border = "1px solid #FCA5A5";
+                            } else if (isPast) {
+                              bg = "var(--surface)";
+                              color = "var(--muted)";
+                              border = "1px solid var(--border-color)";
+                            }
                             const baseStyle: React.CSSProperties = {
-                              backgroundColor: isSelected
-                                ? "var(--primary)"
-                                : available
-                                  ? "var(--background)"
-                                  : "var(--surface)",
-                              color: isSelected
-                                ? "white"
-                                : available
-                                  ? "var(--foreground)"
-                                  : "var(--muted)",
-                              border: isSelected
-                                ? "1px solid var(--primary)"
-                                : "1px solid var(--border-color)",
+                              backgroundColor: bg,
+                              color,
+                              border,
                               cursor: available ? "pointer" : "not-allowed",
-                              opacity: available ? 1 : 0.6,
+                              opacity: available ? 1 : 0.85,
                             };
+
                             const statusLabel = isSelected
                               ? "Seleccionado"
                               : available
                                 ? "Disponible"
-                                : reason === "past"
+                                : isPast
                                   ? "Pasado"
-                                  : "Ocupado";
+                                  : "Reservado";
+
+                            const tooltip = isSelected
+                              ? `Tu cita actual: ${formatHourRange(hour)}`
+                              : isOccupied
+                                ? `Este horario ya está reservado (${formatHourRange(hour)}). No se puede seleccionar de nuevo.`
+                                : isPast
+                                  ? `Este horario ya pasó`
+                                  : `Reservar ${formatHourRange(hour)}`;
+
                             return (
                               <button
                                 key={hour}
                                 type="button"
                                 onClick={() => handleSlotSelect(hour)}
                                 disabled={!available}
-                                className="px-3 py-2.5 rounded-lg text-sm font-medium transition-all hover:opacity-90 disabled:hover:opacity-60"
+                                aria-disabled={!available}
+                                className="px-3 py-2.5 rounded-lg text-sm font-medium transition-all hover:opacity-90 disabled:hover:opacity-100 disabled:cursor-not-allowed"
                                 style={baseStyle}
-                                title={
-                                  available
-                                    ? `Reservar ${formatHourRange(hour)}`
-                                    : `Horario no disponible (${statusLabel.toLowerCase()})`
-                                }
+                                title={tooltip}
                               >
-                                <span className="block text-xs font-semibold">
-                                  {formatHourRange(hour)}
+                                <span className="flex items-center justify-center gap-1.5 text-xs font-semibold">
+                                  {isOccupied && (
+                                    <svg
+                                      width="12"
+                                      height="12"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth="2.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      aria-hidden="true"
+                                    >
+                                      <rect
+                                        x="3"
+                                        y="11"
+                                        width="18"
+                                        height="11"
+                                        rx="2"
+                                        ry="2"
+                                      />
+                                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                    </svg>
+                                  )}
+                                  <span>{formatHourRange(hour)}</span>
                                 </span>
-                                <span className="block text-[10px] mt-0.5 opacity-80">
+                                <span className="block text-[10px] mt-0.5 opacity-90">
                                   {statusLabel}
                                 </span>
                               </button>

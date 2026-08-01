@@ -55,6 +55,36 @@ export async function createAppointmentAction(
 
     // Crear la cita
     const visitDateISO = new Date(formData.visit_date).toISOString();
+    const visitDateObj = new Date(visitDateISO);
+    const slotStart = new Date(visitDateObj);
+    slotStart.setMinutes(0, 0, 0);
+    const slotEnd = new Date(slotStart);
+    slotEnd.setHours(slotEnd.getHours() + 2);
+
+    // Verificar que la propiedad no tenga ya una cita que se solape con este horario
+    const { data: conflicting } = await supabase
+      .from("appointment")
+      .select("appointment_id, visit_date, status, client_id, property_client!inner(property_id)")
+      .eq("property_client.property_id", propertyId)
+      .neq("status", "cancelled")
+      .lt("visit_date", slotEnd.toISOString())
+      .gte("visit_date", new Date(slotStart.getTime() - 2 * 60 * 60 * 1000).toISOString());
+
+    const hasConflict = (conflicting ?? []).some((apt) => {
+      const aptDate = new Date(apt.visit_date);
+      const aptStart = new Date(aptDate);
+      aptStart.setMinutes(0, 0, 0);
+      const aptEnd = new Date(aptStart);
+      aptEnd.setHours(aptEnd.getHours() + 2);
+      return slotStart < aptEnd && slotEnd > aptStart;
+    });
+
+    if (hasConflict) {
+      return {
+        success: false,
+        error: "Este horario ya está reservado. Por favor selecciona otro.",
+      };
+    }
 
     const { data: newAppointment, error: appointmentError } = await supabase
       .from("appointment")
