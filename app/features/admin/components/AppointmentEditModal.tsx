@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Appointment, AppointmentStatus } from "@features/appointments";
-import { appointmentToDatetimeLocal, datetimeLocalToISO } from "@shared/utils";
+import AppointmentCalendarPanel from "@features/appointments/components/AppointmentCalendarPanel";
 
 interface AppointmentEditModalProps {
   appointment: Appointment;
@@ -28,11 +28,8 @@ export default function AppointmentEditModal({
   onClose,
   onSave,
 }: AppointmentEditModalProps) {
-  const [visitDate, setVisitDate] = useState(() =>
-    appointmentToDatetimeLocal(appointment.visit_date)
-  );
+  const [visitDate, setVisitDate] = useState<string>(appointment.visit_date);
   const [status, setStatus] = useState<AppointmentStatus>(appointment.status);
-  const [observations, setObservations] = useState(appointment.observations ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -72,21 +69,14 @@ export default function AppointmentEditModal({
       return;
     }
 
-    const visitDateISO = datetimeLocalToISO(visitDate);
-
-    if (new Date(visitDateISO) < new Date()) {
-      const confirmed = window.confirm(
-        "La fecha seleccionada es en el pasado. ¿Deseas continuar?"
-      );
-      if (!confirmed) return;
-    }
+    const visitDateISO = visitDate;
 
     setSaving(true);
     try {
       await onSave({
         visit_date: visitDateISO,
         status,
-        observations: observations.trim() ? observations : null,
+        observations: appointment.observations ?? null,
       });
       onClose();
     } catch (err) {
@@ -103,7 +93,7 @@ export default function AppointmentEditModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-3xl rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden flex flex-col"
         style={{
           backgroundColor: "var(--surface)",
           border: "1px solid var(--border-color)",
@@ -111,7 +101,7 @@ export default function AppointmentEditModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className="flex items-center justify-between px-6 py-4 border-b"
+          className="flex items-start justify-between px-6 py-4 border-b"
           style={{ borderColor: "var(--border-color)" }}
         >
           <div>
@@ -122,7 +112,7 @@ export default function AppointmentEditModal({
               Editar cita
             </h2>
             <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
-              Modifica la fecha o el estado de la cita.
+              Modifica la fecha o el estado de la cita. Horario de atención: 8:00 AM - 6:00 PM.
             </p>
           </div>
           <button
@@ -134,6 +124,7 @@ export default function AppointmentEditModal({
               backgroundColor: "transparent",
               color: "var(--muted)",
               border: "none",
+              flexShrink: 0,
             }}
           >
             <svg
@@ -152,78 +143,81 @@ export default function AppointmentEditModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
-          <div>
-            <label
-              className="block text-sm font-medium mb-2"
-              style={{ color: "var(--foreground)" }}
-            >
-              Fecha y hora de visita <span style={{ color: "#DC2626" }}>*</span>
-            </label>
-            <input
-              type="datetime-local"
-              value={visitDate}
-              onChange={(e) => setVisitDate(e.target.value)}
-              required
-              className="w-full px-4 py-3 rounded-lg outline-none"
-              style={inputStyle}
-            />
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          <div className="px-6 py-5 overflow-y-auto flex-1 space-y-5">
+            <div>
+              <label
+                className="block text-sm font-medium mb-3"
+                style={{ color: "var(--foreground)" }}
+              >
+                Fecha y hora de visita <span style={{ color: "#DC2626" }}>*</span>
+              </label>
+              <AppointmentCalendarPanel
+                value={visitDate}
+                onChange={setVisitDate}
+                excludeAppointmentId={appointment.appointment_id}
+                allowPast
+              />
+            </div>
+
+            <div>
+              <label
+                className="block text-sm font-medium mb-2"
+                style={{ color: "var(--foreground)" }}
+              >
+                Estado
+              </label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value as AppointmentStatus)}
+                className="w-full px-4 py-3 rounded-lg outline-none"
+                style={inputStyle}
+              >
+                {statusOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label
+                className="block text-sm font-medium mb-2"
+                style={{ color: "var(--foreground)" }}
+              >
+                Observaciones
+              </label>
+              <textarea
+                value={appointment.observations ?? ""}
+                readOnly
+                rows={3}
+                className="w-full px-4 py-3 rounded-lg outline-none resize-none cursor-not-allowed"
+                style={{ ...inputStyle, opacity: 0.7 }}
+                placeholder="Notas, comentarios o detalles relevantes sobre la cita"
+              />
+              <p className="text-xs mt-1.5" style={{ color: "var(--muted)" }}>
+                Las observaciones solo pueden ser definidas por el cliente al agendar la cita.
+              </p>
+            </div>
+
+            {error && (
+              <p
+                className="text-sm px-3 py-2 rounded-lg"
+                style={{
+                  backgroundColor: "#FEE2E2",
+                  color: "#991B1B",
+                }}
+              >
+                {error}
+              </p>
+            )}
           </div>
 
-          <div>
-            <label
-              className="block text-sm font-medium mb-2"
-              style={{ color: "var(--foreground)" }}
-            >
-              Estado
-            </label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value as AppointmentStatus)}
-              className="w-full px-4 py-3 rounded-lg outline-none"
-              style={inputStyle}
-            >
-              {statusOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label
-              className="block text-sm font-medium mb-2"
-              style={{ color: "var(--foreground)" }}
-            >
-              Observaciones
-            </label>
-            <textarea
-              value={observations}
-              readOnly
-              rows={4}
-              className="w-full px-4 py-3 rounded-lg outline-none resize-none cursor-not-allowed"
-              style={{ ...inputStyle, opacity: 0.7 }}
-              placeholder="Notas, comentarios o detalles relevantes sobre la cita"
-            />
-            <p className="text-xs mt-1.5" style={{ color: "var(--muted)" }}>
-              Las observaciones solo pueden ser definidas por el cliente al agendar la cita.
-            </p>
-          </div>
-
-          {error && (
-            <p
-              className="text-sm px-3 py-2 rounded-lg"
-              style={{
-                backgroundColor: "#FEE2E2",
-                color: "#991B1B",
-              }}
-            >
-              {error}
-            </p>
-          )}
-
-          <div className="flex items-center justify-end gap-3 pt-2">
+          <div
+            className="flex items-center justify-end gap-3 px-6 py-4 border-t"
+            style={{ borderColor: "var(--border-color)" }}
+          >
             <button
               type="button"
               onClick={onClose}
