@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@shared/utils/supabase/admin";
+import { datetimeLocalToISO, parseAppointmentDate } from "@shared/utils";
 import type { AppointmentFormData } from "./components/AppointmentForm";
 
 interface ActionResult {
@@ -54,8 +55,11 @@ export async function createAppointmentAction(
     }
 
     // Crear la cita
-    const visitDateISO = new Date(formData.visit_date).toISOString();
-    const visitDateObj = new Date(visitDateISO);
+    const visitDateISO = datetimeLocalToISO(formData.visit_date);
+    const visitDateObj = parseAppointmentDate(visitDateISO);
+    if (!visitDateObj) {
+      return { success: false, error: "La fecha de la cita no es válida." };
+    }
     const slotStart = new Date(visitDateObj);
     slotStart.setMinutes(0, 0, 0);
     const slotEnd = new Date(slotStart);
@@ -71,7 +75,8 @@ export async function createAppointmentAction(
       .gte("visit_date", new Date(slotStart.getTime() - 2 * 60 * 60 * 1000).toISOString());
 
     const hasConflict = (conflicting ?? []).some((apt) => {
-      const aptDate = new Date(apt.visit_date);
+      const aptDate = parseAppointmentDate(apt.visit_date);
+      if (!aptDate) return false;
       const aptStart = new Date(aptDate);
       aptStart.setMinutes(0, 0, 0);
       const aptEnd = new Date(aptStart);

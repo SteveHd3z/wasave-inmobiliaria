@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@shared/utils/supabase";
+import { formatAppointmentDateTime } from "@shared/utils";
 import { StatsCard } from "@features/admin";
 import { Card } from "@shared/components/ui";
 
@@ -124,7 +125,7 @@ export default function AdminDashboard() {
                 {upcomingAppointments.map((apt) => (
                   <tr key={apt.appointment_id} style={{ borderBottom: "1px solid var(--border-color)" }}>
                     <td className="py-3 px-2" style={{ color: "var(--foreground)" }}>
-                      {new Date(apt.visit_date).toLocaleString("es-CO")}
+                      {formatAppointmentDateTime(apt.visit_date)}
                     </td>
                     <td className="py-3 px-2" style={{ color: "var(--foreground)" }}>
                       {apt.client?.name ?? "Sin cliente"}

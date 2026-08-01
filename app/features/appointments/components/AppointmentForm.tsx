@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import AppointmentDatePicker from "./AppointmentDatePicker";
+import { parseAppointmentDate } from "@shared/utils";
 
 export interface AppointmentFormData {
   name: string;
@@ -64,8 +65,8 @@ export default function AppointmentForm({ propertyId, onSubmit, loading = false 
     if (!form.visit_date) {
       newErrors.visit_date = "Selecciona un día y horario disponibles";
     } else {
-      const visitDate = new Date(form.visit_date);
-      if (Number.isNaN(visitDate.getTime())) {
+      const visitDate = parseAppointmentDate(form.visit_date);
+      if (!visitDate) {
         newErrors.visit_date = "La fecha seleccionada no es válida";
       } else if (visitDate < new Date()) {
         newErrors.visit_date = "La fecha debe ser futura";

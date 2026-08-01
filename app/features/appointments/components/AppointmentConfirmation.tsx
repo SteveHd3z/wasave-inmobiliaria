@@ -1,6 +1,7 @@
 "use client";
 
 import type { AppointmentFormData } from "./AppointmentForm";
+import { formatAppointmentDateTime } from "@shared/utils";
 
 interface AppointmentConfirmationProps {
   data: AppointmentFormData;
@@ -13,16 +14,7 @@ export default function AppointmentConfirmation({
   whatsappLink,
   onNewAppointment,
 }: AppointmentConfirmationProps) {
-  const visitDate = data.visit_date
-    ? new Date(data.visit_date).toLocaleString("es-CO", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : "";
+  const visitDate = formatAppointmentDateTime(data.visit_date);
 
   return (
     <div className="text-center space-y-6">

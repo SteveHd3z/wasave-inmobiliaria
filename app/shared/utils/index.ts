@@ -1,6 +1,12 @@
 import { WHATSAPP_LINK, WHATSAPP_MESSAGE_DEFAULT } from "../constants";
 
 export { createBrowserClient } from "./supabase";
+export {
+  parseAppointmentDate,
+  appointmentToDatetimeLocal,
+  datetimeLocalToISO,
+  formatAppointmentDateTime,
+} from "./date";
 
 export function getWhatsappLink(message?: string): string {
   const encodedMessage = encodeURIComponent(message || WHATSAPP_MESSAGE_DEFAULT);

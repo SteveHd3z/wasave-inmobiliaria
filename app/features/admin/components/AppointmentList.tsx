@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import StatusBadge from "./StatusBadge";
+import { formatAppointmentDateTime } from "@shared/utils";
 import type { AppointmentWithClient } from "@features/appointments";
 
 interface AppointmentListProps {
@@ -52,7 +53,7 @@ export default function AppointmentList({ appointments, onDelete }: AppointmentL
           {appointments.map((apt) => (
             <tr key={apt.appointment_id} style={{ borderBottom: "1px solid var(--border-color)" }}>
               <td className="py-3 px-2 font-medium" style={{ color: "var(--foreground)" }}>
-                {new Date(apt.visit_date).toLocaleString("es-CO")}
+                {formatAppointmentDateTime(apt.visit_date)}
               </td>
               <td className="py-3 px-2" style={{ color: "var(--foreground)" }}>
                 {apt.client

@@ -5,6 +5,7 @@ import StatusBadge from "./StatusBadge";
 import ConfirmDialog from "./ConfirmDialog";
 import AppointmentEditModal from "./AppointmentEditModal";
 import { generateWhatsAppMessage, getWhatsAppLink } from "@features/notifications";
+import { formatAppointmentDateTime } from "@shared/utils";
 import type {
   Appointment,
   AppointmentStatus,
@@ -127,14 +128,7 @@ export default function AppointmentDetail({
               Fecha de visita
             </p>
             <p className="text-sm font-medium" style={{ color: "var(--foreground)" }}>
-              {new Date(appointment.visit_date).toLocaleString("es-CO", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              {formatAppointmentDateTime(appointment.visit_date)}
             </p>
           </div>
 

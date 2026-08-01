@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Appointment, AppointmentStatus } from "@features/appointments";
+import { appointmentToDatetimeLocal, datetimeLocalToISO } from "@shared/utils";
 
 interface AppointmentEditModalProps {
   appointment: Appointment;
@@ -21,18 +22,15 @@ const statusOptions: { value: AppointmentStatus; label: string }[] = [
   { value: "completed", label: "Completada" },
 ];
 
-function toDateTimeLocal(iso: string): string {
-  if (!iso) return "";
-  return iso.slice(0, 16);
-}
-
 export default function AppointmentEditModal({
   appointment,
   open,
   onClose,
   onSave,
 }: AppointmentEditModalProps) {
-  const [visitDate, setVisitDate] = useState(() => toDateTimeLocal(appointment.visit_date));
+  const [visitDate, setVisitDate] = useState(() =>
+    appointmentToDatetimeLocal(appointment.visit_date)
+  );
   const [status, setStatus] = useState<AppointmentStatus>(appointment.status);
   const [observations, setObservations] = useState(appointment.observations ?? "");
   const [saving, setSaving] = useState(false);
@@ -74,7 +72,7 @@ export default function AppointmentEditModal({
       return;
     }
 
-    const visitDateISO = new Date(visitDate).toISOString();
+    const visitDateISO = datetimeLocalToISO(visitDate);
 
     if (new Date(visitDateISO) < new Date()) {
       const confirmed = window.confirm(

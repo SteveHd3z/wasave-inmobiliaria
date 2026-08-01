@@ -1,16 +1,10 @@
 import type { NotificationData } from "../types";
+import { formatAppointmentDateTime } from "@shared/utils";
 
 export function generateWhatsAppMessage(data: NotificationData): string {
   const { appointment, client, action } = data;
   const clientName = `${client.name} ${client.last_name || ""}`.trim();
-  const visitDate = new Date(appointment.visit_date).toLocaleDateString("es-CO", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const visitDate = formatAppointmentDateTime(appointment.visit_date);
 
   switch (action) {
     case "created":

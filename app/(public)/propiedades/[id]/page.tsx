@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Header, Footer, WhatsAppButton } from "@shared/components/layout";
 import { createBrowserClient } from "@shared/utils/supabase";
+import { datetimeLocalToISO } from "@shared/utils";
 import { PropertyGallery } from "@features/properties";
 import { AppointmentForm, AppointmentConfirmation } from "@features/appointments";
 import { createAppointmentAction } from "@features/appointments/actions";
@@ -77,7 +78,7 @@ export default function PropertyDetailPage() {
     const message = generateWhatsAppMessage({
       appointment: {
         appointment_id: result.data.appointmentId,
-        visit_date: new Date(formData.visit_date).toISOString(),
+        visit_date: datetimeLocalToISO(formData.visit_date),
         status: "pending",
         observations: formData.observations || null,
         created_at: new Date().toISOString(),

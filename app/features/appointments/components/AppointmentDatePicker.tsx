@@ -12,6 +12,7 @@ import {
   startOfToday,
 } from "date-fns";
 import { createBrowserClient } from "@shared/utils/supabase";
+import { parseAppointmentDate } from "@shared/utils";
 import type { AppointmentStatus } from "@features/appointments";
 
 const BUSINESS_START_HOUR = 8;
@@ -39,8 +40,8 @@ function buildOccupancy(
   const map = new Map<string, DayOccupancy>();
   for (const apt of appointments) {
     if (!isActiveStatus(apt.status)) continue;
-    const date = new Date(apt.visit_date);
-    if (Number.isNaN(date.getTime())) continue;
+    const date = parseAppointmentDate(apt.visit_date);
+    if (!date) continue;
     const dayKey = format(startOfDay(date), "yyyy-MM-dd");
     const startHour = date.getHours();
     const entry = map.get(dayKey) ?? {
@@ -173,11 +174,7 @@ export default function AppointmentDatePicker({
     };
   }, [open]);
 
-  const valueDate = useMemo(() => {
-    if (!value) return null;
-    const d = new Date(value);
-    return Number.isNaN(d.getTime()) ? null : d;
-  }, [value]);
+  const valueDate = useMemo(() => parseAppointmentDate(value), [value]);
 
   const today = startOfToday();
   const modalSelectedDate = pendingDate ?? (valueDate ? startOfDay(valueDate) : null);
