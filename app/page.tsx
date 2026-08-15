@@ -4,7 +4,6 @@ import { SegurosSection } from "@features/seguros";
 import { ServiciosSection } from "@features/servicios";
 import { MantenimientoSection } from "@features/mantenimiento";
 import { CompraVentaSection } from "@features/compra-venta";
-import { DisponibleSection } from "@features/disponible";
 import { RepresentanteLegalSection } from "@features/representante-legal";
 
 export default function Home() {
@@ -17,7 +16,6 @@ export default function Home() {
         <ServiciosSection />
         <MantenimientoSection />
         <CompraVentaSection />
-        <DisponibleSection />
         <RepresentanteLegalSection />
       </main>
       <Footer />

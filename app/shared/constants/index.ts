@@ -18,7 +18,6 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Servicios", href: "#servicios" },
   { label: "Mantenimiento", href: "#mantenimiento" },
   { label: "Compra y Venta", href: "#compra-venta" },
-  { label: "Disponible", href: "#disponible" },
   { label: "Representante", href: "#representante" },
 ];
 
