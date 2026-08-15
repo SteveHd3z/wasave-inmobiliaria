@@ -62,8 +62,71 @@ export default function PropiedadesPage() {
   const handleDelete = async () => {
     if (!deleteId) return;
     setDeleting(true);
-    await supabase.from("property_media").delete().eq("property_id", deleteId);
-    await supabase.from("property").delete().eq("property_id", deleteId);
+
+    const { data: media, error: mediaQueryError } = await supabase
+      .from("property_media")
+      .select("file_url")
+      .eq("property_id", deleteId);
+
+    if (mediaQueryError) {
+      console.error("Error al consultar las imagenes de la propiedad:", mediaQueryError);
+      alert("No se pudo eliminar la propiedad");
+      setDeleting(false);
+      return;
+    }
+
+    const storagePaths = (media ?? [])
+      .map(({ file_url }) => {
+        const marker = "/storage/v1/object/public/property-media/";
+        const markerIndex = file_url.indexOf(marker);
+        return markerIndex === -1
+          ? null
+          : decodeURIComponent(file_url.slice(markerIndex + marker.length));
+      })
+      .filter((path): path is string => path !== null);
+
+    if (storagePaths.length > 0) {
+      const { error: storageError } = await supabase.storage
+        .from("property-media")
+        .remove(storagePaths);
+
+      if (storageError) {
+        console.error("Error al eliminar imagenes del storage:", storageError);
+      }
+    }
+
+    const { error: mediaDeleteError } = await supabase
+      .from("property_media")
+      .delete()
+      .eq("property_id", deleteId);
+
+    const { error: clientsDeleteError } = await supabase
+      .from("property_client")
+      .delete()
+      .eq("property_id", deleteId);
+
+    if (mediaDeleteError || clientsDeleteError) {
+      console.error("Error al eliminar relaciones de la propiedad:", {
+        mediaDeleteError,
+        clientsDeleteError,
+      });
+      alert("No se pudo eliminar completamente la propiedad");
+      setDeleting(false);
+      return;
+    }
+
+    const { error: propertyDeleteError } = await supabase
+      .from("property")
+      .delete()
+      .eq("property_id", deleteId);
+
+    if (propertyDeleteError) {
+      console.error("Error al eliminar la propiedad:", propertyDeleteError);
+      alert("No se pudo eliminar la propiedad");
+      setDeleting(false);
+      return;
+    }
+
     setDeleteId(null);
     setDeleting(false);
     loadProperties();
