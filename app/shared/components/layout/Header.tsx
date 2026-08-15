@@ -1,12 +1,18 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTheme } from "@shared/hooks";
 import { ThemeToggle } from "@shared/components/layout";
 import { NAV_ITEMS, COMPANY_NAME } from "@shared/constants";
 
 export default function Header() {
   const { theme } = useTheme();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
+  const getHref = (hash: string) => (isHome ? hash : `/${hash}`);
 
   return (
     <header
@@ -18,7 +24,7 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <a href="#inicio" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <Image
               src="/images/logo.png"
               alt={`${COMPANY_NAME} Logo`}
@@ -31,19 +37,26 @@ export default function Header() {
               width={140}
               height={30}
             />
-          </a>
+          </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
             {NAV_ITEMS.map((item) => (
-              <a
+              <Link
                 key={item.href}
-                href={item.href}
+                href={getHref(item.href)}
                 className="px-3 py-2 rounded-lg text-sm font-semibold transition-colors hover:opacity-80"
                 style={{ color: "var(--foreground)" }}
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
+            <Link
+              href="/propiedades"
+              className="px-3 py-2 rounded-lg text-sm font-semibold transition-colors hover:opacity-80"
+              style={{ color: "var(--primary)" }}
+            >
+              Propiedades
+            </Link>
             <div className="ml-2">
               <ThemeToggle />
             </div>
