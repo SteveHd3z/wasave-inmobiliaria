@@ -6,6 +6,8 @@ import { formatAppointmentDateTime } from "@shared/utils";
 import { StatsCard } from "@features/admin";
 import { Card } from "@shared/components/ui";
 
+const supabase = createBrowserClient();
+
 interface DashboardStats {
   totalProperties: number;
   totalOwners: number;
@@ -31,11 +33,13 @@ export default function AdminDashboard() {
   });
   const [upcomingAppointments, setUpcomingAppointments] = useState<AppointmentRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const supabase = createBrowserClient();
 
   useEffect(() => {
     async function fetchDashboardData() {
-      const today = new Date().toISOString().split("T")[0];
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const tomorrowStart = new Date(todayStart);
+      tomorrowStart.setDate(tomorrowStart.getDate() + 1);
 
       const [propertiesRes, ownersRes, clientsRes, pendingRes, todayRes, upcomingRes] =
         await Promise.all([
@@ -43,18 +47,18 @@ export default function AdminDashboard() {
           supabase.from("owner").select("*", { count: "exact", head: true }),
           supabase.from("client").select("*", { count: "exact", head: true }),
           supabase
-            .from("appointments")
+            .from("appointment")
             .select("*", { count: "exact", head: true })
             .eq("status", "pending"),
           supabase
-            .from("appointments")
+            .from("appointment")
             .select("*", { count: "exact", head: true })
-            .gte("visit_date", today)
-            .lt("visit_date", `${today}T23:59:59`),
+            .gte("visit_date", todayStart.toISOString())
+            .lt("visit_date", tomorrowStart.toISOString()),
           supabase
-            .from("appointments")
+            .from("appointment")
             .select("appointment_id, visit_date, status, client(name)")
-            .gte("visit_date", today)
+            .gte("visit_date", todayStart.toISOString())
             .order("visit_date", { ascending: true })
             .limit(5),
         ]);
@@ -72,7 +76,7 @@ export default function AdminDashboard() {
     }
 
     fetchDashboardData();
-  }, [supabase]);
+  }, []);
 
   if (loading) {
     return (
@@ -93,7 +97,7 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <StatsCard title="Propiedades activas" value={stats.totalProperties} icon="🏠" />
-        <StatsCard title="Citas pendientes" value={stats.pendingAppointments} icon="⏳" />
+        <StatsCard title="Citas pendientes de confirmación" value={stats.pendingAppointments} icon="⏳" />
         <StatsCard title="Citas hoy" value={stats.todayAppointments} icon="📅" />
         <StatsCard title="Total owners" value={stats.totalOwners} icon="👤" />
         <StatsCard title="Total clientes" value={stats.totalClients} icon="👥" />
