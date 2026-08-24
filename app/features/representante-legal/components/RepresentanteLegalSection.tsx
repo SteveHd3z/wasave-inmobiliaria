@@ -25,8 +25,7 @@ export default function RepresentanteLegalSection() {
           src="/images/chicago.jpg"
           alt="Chicago skyline"
           fill
-          className="object-cover"
-          style={{ opacity: theme === "dark" ? 0.35 : 0.25 }}
+          style={{ opacity: theme === "dark" ? 0.9 : 0.9 }}
           priority
         />
         <div
@@ -34,8 +33,8 @@ export default function RepresentanteLegalSection() {
           style={{
             background:
               theme === "dark"
-                ? "linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%)"
-                : "linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.75) 100%)",
+                ? "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 100%)"
+                : "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.1) 100%)",
           }}
         />
       </div>
@@ -120,7 +119,7 @@ export default function RepresentanteLegalSection() {
 
       {showLicencia && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 z-100 flex items-center justify-center p-4"
           onClick={() => setShowLicencia(false)}
           style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
         >
@@ -146,7 +145,7 @@ export default function RepresentanteLegalSection() {
 
             <div className="overflow-y-auto max-h-[calc(90vh-72px)] p-4">
               {REPRESENTANTE_DATA.licencias.map((licencia, idx) => (
-                <div key={idx} className={`relative w-full mb-4 rounded-lg overflow-hidden shadow-md ${idx === 0 ? 'h-[28rem]' : 'h-84'}`}>
+                <div key={idx} className={`relative w-full mb-4 rounded-lg overflow-hidden shadow-md ${idx === 0 ? 'h-28rem' : 'h-84'}`}>
                   <Image
                     src={licencia}
                     alt={`Licencia profesional ${idx + 1}`}
