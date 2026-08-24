@@ -3,5 +3,5 @@ export interface RepresentanteLegal {
   cargo: string;
   biografia: string[];
   imagen: string;
-  licencia: string;
+  licencias: string[];
 }

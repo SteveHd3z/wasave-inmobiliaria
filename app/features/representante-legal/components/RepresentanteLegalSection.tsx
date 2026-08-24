@@ -20,21 +20,22 @@ export default function RepresentanteLegalSection() {
           theme === "dark" ? "var(--background)" : "var(--surface)",
       }}
     >
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 z-0">
         <Image
           src="/images/chicago.jpg"
           alt="Chicago skyline"
           fill
-          className="object-center"
-          style={{ opacity: theme === "dark" ? 0.8 : 0.9 }}
+          className="object-cover"
+          style={{ opacity: theme === "dark" ? 0.35 : 0.25 }}
+          priority
         />
         <div
           className="absolute inset-0"
           style={{
             background:
               theme === "dark"
-                ? "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%)"
-                : "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.1) 100%)",
+                ? "linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%)"
+                : "linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.75) 100%)",
           }}
         />
       </div>
@@ -119,29 +120,41 @@ export default function RepresentanteLegalSection() {
 
       {showLicencia && (
         <div
-          className="fixed inset-0 z-100 flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
           onClick={() => setShowLicencia(false)}
           style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
         >
           <div
-            className="relative w-full max-w-5xl max-h-[95vh] rounded-2xl overflow-hidden"
+            className="relative w-full max-w-3xl max-h-[90vh] rounded-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
             style={{ backgroundColor: "var(--background)" }}
           >
-            <button
-              onClick={() => setShowLicencia(false)}
-              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full flex items-center justify-center text-white text-xl font-bold cursor-pointer hover:opacity-80 transition-opacity"
-              style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
+            <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b"
+              style={{ backgroundColor: "var(--surface)", borderColor: "var(--border-color)" }}
             >
-              ✕
-            </button>
-            <div className="relative w-full h-[90vh]">
-              <Image
-                src={REPRESENTANTE_DATA.licencia}
-                alt="Licencia profesional"
-                fill
-                className="object-contain p-6"
-              />
+              <h3 className="text-lg font-bold" style={{ color: "var(--foreground)" }}>
+                Licencias Profesionales
+              </h3>
+              <button
+                onClick={() => setShowLicencia(false)}
+                className="w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold cursor-pointer hover:opacity-80 transition-opacity"
+                style={{ backgroundColor: "var(--border-color)", color: "var(--foreground)" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="overflow-y-auto max-h-[calc(90vh-72px)] p-4">
+              {REPRESENTANTE_DATA.licencias.map((licencia, idx) => (
+                <div key={idx} className={`relative w-full mb-4 rounded-lg overflow-hidden shadow-md ${idx === 0 ? 'h-[28rem]' : 'h-84'}`}>
+                  <Image
+                    src={licencia}
+                    alt={`Licencia profesional ${idx + 1}`}
+                    fill
+                    className="object-fill"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>
