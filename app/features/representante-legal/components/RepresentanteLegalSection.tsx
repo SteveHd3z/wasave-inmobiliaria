@@ -14,13 +14,32 @@ export default function RepresentanteLegalSection() {
   return (
     <section
       id="representante"
-      className="py-20 px-4"
+      className="relative py-20 px-4 overflow-hidden"
       style={{
         backgroundColor:
           theme === "dark" ? "var(--background)" : "var(--surface)",
       }}
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="absolute inset-0">
+        <Image
+          src="/images/chicago.jpg"
+          alt="Chicago skyline"
+          fill
+          className="object-center"
+          style={{ opacity: theme === "dark" ? 0.8 : 0.9 }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              theme === "dark"
+                ? "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%)"
+                : "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.1) 100%)",
+          }}
+        />
+      </div>
+
+      <div className="relative z-10 max-w-4xl mx-auto">
         <SectionHeader label="Nosotros" title="Representante Legal" />
 
         <div
@@ -31,7 +50,7 @@ export default function RepresentanteLegalSection() {
           }}
         >
           <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
-            <div className="relative w-40 h-52 rounded-2xl overflow-hidden flex-shrink-0 shadow-lg"
+            <div className="relative w-40 h-52 rounded-2xl overflow-hidden shrink-0 shadow-lg"
               style={{
                 border: "3px solid var(--primary)",
               }}
@@ -100,7 +119,7 @@ export default function RepresentanteLegalSection() {
 
       {showLicencia && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 z-100 flex items-center justify-center p-4"
           onClick={() => setShowLicencia(false)}
           style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
         >
