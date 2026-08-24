@@ -145,7 +145,7 @@ export default function RepresentanteLegalSection() {
 
             <div className="overflow-y-auto max-h-[calc(90vh-72px)] p-4">
               {REPRESENTANTE_DATA.licencias.map((licencia, idx) => (
-                <div key={idx} className={`relative w-full mb-4 rounded-lg overflow-hidden shadow-md ${idx === 0 ? 'h-28rem' : 'h-84'}`}>
+                <div key={idx} className={`relative w-full mb-4 rounded-lg overflow-hidden shadow-md ${idx === 0 ? 'h-[28rem]' : 'h-84'}`}>
                   <Image
                     src={licencia}
                     alt={`Licencia profesional ${idx + 1}`}
