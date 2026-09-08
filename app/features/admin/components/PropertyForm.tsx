@@ -16,6 +16,18 @@ interface PropertyFormProps {
   loading?: boolean;
 }
 
+interface FormErrors {
+  title?: string;
+  type?: string;
+  owner_id?: string;
+  area?: string;
+  address?: string;
+  base_price?: string;
+  sale_price?: string;
+  description?: string;
+  media?: string;
+}
+
 export default function PropertyForm({
   initialData,
   existingMedia = [],
@@ -42,6 +54,7 @@ export default function PropertyForm({
     { type: "existing"; id: string } | { type: "new"; index: number } | null
   >(null);
   const [mediaList, setMediaList] = useState(existingMedia);
+  const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
     supabase
@@ -61,14 +74,23 @@ export default function PropertyForm({
       ...prev,
       [name]: name === "area" ? (value === "" ? undefined : Number(value)) : value,
     }));
+    if (errors[name as keyof FormErrors]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
   };
 
   const handleCurrencyChange = (name: string, value: number | undefined) => {
     setForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name as keyof FormErrors]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
   };
 
   const handleFilesAdd = (newFiles: File[]) => {
     setFiles((prev) => [...prev, ...newFiles]);
+    if (errors.media) {
+      setErrors((prev) => ({ ...prev, media: undefined }));
+    }
   };
 
   const handleRemoveNew = (index: number) => {
@@ -98,9 +120,56 @@ export default function PropertyForm({
     else setCoverSource(null);
   };
 
+  const validate = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    if (!form.title?.trim()) {
+      newErrors.title = "El titulo es obligatorio";
+    }
+
+    if (!form.type?.trim()) {
+      newErrors.type = "Seleccione un tipo de propiedad";
+    }
+
+    if (!form.owner_id?.trim()) {
+      newErrors.owner_id = "Seleccione un propietario";
+    }
+
+    if (form.area === undefined || form.area === null || form.area <= 0) {
+      newErrors.area = "El area es obligatoria y debe ser mayor a 0";
+    }
+
+    if (!form.address?.trim()) {
+      newErrors.address = "La direccion es obligatoria";
+    }
+
+    if (!form.base_price || form.base_price <= 0) {
+      newErrors.base_price = "El precio base es obligatorio y debe ser mayor a 0";
+    }
+
+    if (!form.sale_price || form.sale_price <= 0) {
+      newErrors.sale_price = "El precio de venta es obligatorio y debe ser mayor a 0";
+    }
+
+    if (!form.description?.trim()) {
+      newErrors.description = "La descripcion es obligatoria";
+    }
+
+    const hasMedia = files.length > 0 || (mediaList.length > 0 && mediaList.length - removedMediaIds.length > 0);
+    if (!hasMedia) {
+      newErrors.media = "Debe agregar al menos una imagen o video";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
+
+    if (!validate()) return;
+
     const coverFile =
       coverSource?.type === "new" ? files[coverSource.index] : null;
     await onSubmit(form, files, coverFile, removedMediaIds);
@@ -127,29 +196,40 @@ export default function PropertyForm({
               name="title"
               value={form.title}
               onChange={handleChange}
-              required
               className="w-full px-4 py-3 rounded-lg outline-none"
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                borderColor: errors.title ? "#DC2626" : inputStyle.border,
+              }}
               placeholder="Titulo de la propiedad"
             />
+            {errors.title && (
+              <p className="mt-1 text-sm" style={{ color: "#DC2626" }}>{errors.title}</p>
+            )}
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-              Tipo de propiedad
+              Tipo de propiedad <span style={{ color: "#DC2626" }}>*</span>
             </label>
             <select
               name="type"
               value={form.type ?? ""}
               onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg outline-none"
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                borderColor: errors.type ? "#DC2626" : inputStyle.border,
+              }}
             >
               <option value="">Seleccionar tipo</option>
               <option value="casa">Casa Fincas</option>
               <option value="lote">Lotes</option>
               <option value="cabana">Cabañas</option>
             </select>
+            {errors.type && (
+              <p className="mt-1 text-sm" style={{ color: "#DC2626" }}>{errors.type}</p>
+            )}
           </div>
 
           <div>
@@ -160,9 +240,11 @@ export default function PropertyForm({
               name="owner_id"
               value={form.owner_id}
               onChange={handleChange}
-              required
               className="w-full px-4 py-3 rounded-lg outline-none"
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                borderColor: errors.owner_id ? "#DC2626" : inputStyle.border,
+              }}
             >
               <option value="">Seleccionar propietario</option>
               {owners.map((o) => (
@@ -171,6 +253,9 @@ export default function PropertyForm({
                 </option>
               ))}
             </select>
+            {errors.owner_id && (
+              <p className="mt-1 text-sm" style={{ color: "#DC2626" }}>{errors.owner_id}</p>
+            )}
           </div>
         </div>
       </FormSection>
@@ -182,7 +267,7 @@ export default function PropertyForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
             <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-              Area (m²)
+              Area (m²) <span style={{ color: "#DC2626" }}>*</span>
             </label>
             <input
               name="area"
@@ -190,25 +275,35 @@ export default function PropertyForm({
               value={form.area ?? ""}
               onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg outline-none"
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                borderColor: errors.area ? "#DC2626" : inputStyle.border,
+              }}
               placeholder="0"
-              min="0"
-              step="0.01"
             />
+            {errors.area && (
+              <p className="mt-1 text-sm" style={{ color: "#DC2626" }}>{errors.area}</p>
+            )}
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-              Direccion
+              Direccion <span style={{ color: "#DC2626" }}>*</span>
             </label>
             <input
               name="address"
               value={form.address ?? ""}
               onChange={handleChange}
               className="w-full px-4 py-3 rounded-lg outline-none"
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                borderColor: errors.address ? "#DC2626" : inputStyle.border,
+              }}
               placeholder="Direccion de la propiedad"
             />
+            {errors.address && (
+              <p className="mt-1 text-sm" style={{ color: "#DC2626" }}>{errors.address}</p>
+            )}
           </div>
         </div>
       </FormSection>
@@ -220,28 +315,40 @@ export default function PropertyForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
             <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-              Precio base
+              Precio base <span style={{ color: "#DC2626" }}>*</span>
             </label>
             <CurrencyInput
               name="base_price"
               value={form.base_price}
               onChange={handleCurrencyChange}
               className="w-full"
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                borderColor: errors.base_price ? "#DC2626" : inputStyle.border,
+              }}
             />
+            {errors.base_price && (
+              <p className="mt-1 text-sm" style={{ color: "#DC2626" }}>{errors.base_price}</p>
+            )}
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-              Precio de venta
+              Precio de venta <span style={{ color: "#DC2626" }}>*</span>
             </label>
             <CurrencyInput
               name="sale_price"
               value={form.sale_price}
               onChange={handleCurrencyChange}
               className="w-full"
-              style={inputStyle}
+              style={{
+                ...inputStyle,
+                borderColor: errors.sale_price ? "#DC2626" : inputStyle.border,
+              }}
             />
+            {errors.sale_price && (
+              <p className="mt-1 text-sm" style={{ color: "#DC2626" }}>{errors.sale_price}</p>
+            )}
           </div>
         </div>
       </FormSection>
@@ -250,30 +357,46 @@ export default function PropertyForm({
         title="Descripcion"
         description="Detalla las caracteristicas y atractivos principales."
       >
-        <textarea
-          name="description"
-          value={form.description ?? ""}
-          onChange={handleChange}
-          rows={5}
-          className="w-full px-4 py-3 rounded-lg outline-none resize-none"
-          style={inputStyle}
-          placeholder="Descripcion detallada de la propiedad"
-        />
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
+            Descripcion <span style={{ color: "#DC2626" }}>*</span>
+          </label>
+          <textarea
+            name="description"
+            value={form.description ?? ""}
+            onChange={handleChange}
+            rows={5}
+            className="w-full px-4 py-3 rounded-lg outline-none resize-none"
+            style={{
+              ...inputStyle,
+              borderColor: errors.description ? "#DC2626" : inputStyle.border,
+            }}
+            placeholder="Descripcion detallada de la propiedad"
+          />
+          {errors.description && (
+            <p className="mt-1 text-sm" style={{ color: "#DC2626" }}>{errors.description}</p>
+          )}
+        </div>
       </FormSection>
 
       <FormSection
         title="Multimedia"
         description="Imagenes y videos de la propiedad. Marca una como portada."
       >
-        <MediaUploader
-          files={files}
-          existingMedia={mediaList}
-          onFilesAdd={handleFilesAdd}
-          onRemoveNew={handleRemoveNew}
-          onRemoveExisting={handleRemoveExisting}
-          onSetCover={handleSetCover}
-          coverSource={coverSource}
-        />
+        <div>
+          <MediaUploader
+            files={files}
+            existingMedia={mediaList}
+            onFilesAdd={handleFilesAdd}
+            onRemoveNew={handleRemoveNew}
+            onRemoveExisting={handleRemoveExisting}
+            onSetCover={handleSetCover}
+            coverSource={coverSource}
+          />
+          {errors.media && (
+            <p className="mt-2 text-sm" style={{ color: "#DC2626" }}>{errors.media}</p>
+          )}
+        </div>
       </FormSection>
     </form>
   );
