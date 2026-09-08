@@ -12,6 +12,7 @@ interface OwnerFormProps {
 }
 
 interface FormErrors {
+  name?: string;
   email?: string;
   phone?: string;
 }
@@ -33,28 +34,47 @@ export default function OwnerForm({ initialData, onSubmit, loading = false }: Ow
     if (name === "phone") {
       const digitsOnly = formatPhoneInput(value);
       setForm((prev) => ({ ...prev, phone: digitsOnly || undefined }));
-      setErrors((prev) => ({ ...prev, phone: validatePhone(digitsOnly) }));
+      if (errors.phone) {
+        setErrors((prev) => ({ ...prev, phone: undefined }));
+      }
       return;
     }
 
     setForm((prev) => ({ ...prev, [name]: value || undefined }));
 
-    if (name === "email") {
-      setErrors((prev) => ({ ...prev, email: validateEmail(value) }));
+    if (errors[name as keyof FormErrors]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
+  };
+
+  const validate = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    if (!form.name?.trim()) {
+      newErrors.name = "El nombre es obligatorio";
+    }
+
+    if (!form.phone?.trim()) {
+      newErrors.phone = "El telefono es obligatorio";
+    } else {
+      const phoneError = validatePhone(form.phone);
+      if (phoneError) newErrors.phone = phoneError;
+    }
+
+    if (form.email?.trim()) {
+      const emailError = validateEmail(form.email);
+      if (emailError) newErrors.email = emailError;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
 
-    const emailError = form.email ? validateEmail(form.email) : undefined;
-    const phoneError = form.phone ? validatePhone(form.phone) : undefined;
-
-    if (emailError || phoneError) {
-      setErrors({ email: emailError, phone: phoneError });
-      return;
-    }
+    if (!validate()) return;
 
     await onSubmit(form);
   };
@@ -63,11 +83,6 @@ export default function OwnerForm({ initialData, onSubmit, loading = false }: Ow
     backgroundColor: "var(--background)",
     border: "1px solid var(--border-color)",
     color: "var(--foreground)",
-  };
-
-  const errorInputStyle = {
-    ...inputStyle,
-    border: "1px solid #DC2626",
   };
 
   return (
@@ -81,11 +96,16 @@ export default function OwnerForm({ initialData, onSubmit, loading = false }: Ow
             name="name"
             value={form.name ?? ""}
             onChange={handleChange}
-            required
             className="w-full px-4 py-3 rounded-lg outline-none transition-colors"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              borderColor: errors.name ? "#DC2626" : inputStyle.border,
+            }}
             placeholder="Nombre del propietario"
           />
+          {errors.name && (
+            <p className="text-sm mt-1" style={{ color: "#DC2626" }}>{errors.name}</p>
+          )}
         </div>
 
         <div>
@@ -108,37 +128,38 @@ export default function OwnerForm({ initialData, onSubmit, loading = false }: Ow
           </label>
           <input
             name="email"
-            type="email"
             value={form.email ?? ""}
             onChange={handleChange}
             className="w-full px-4 py-3 rounded-lg outline-none transition-colors"
-            style={errors.email ? errorInputStyle : inputStyle}
+            style={{
+              ...inputStyle,
+              borderColor: errors.email ? "#DC2626" : inputStyle.border,
+            }}
             placeholder="correo@ejemplo.com"
           />
           {errors.email && (
-            <p className="text-sm mt-1" style={{ color: "#DC2626" }}>
-              {errors.email}
-            </p>
+            <p className="text-sm mt-1" style={{ color: "#DC2626" }}>{errors.email}</p>
           )}
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: "var(--foreground)" }}>
-            Telefono
+            Telefono <span style={{ color: "#DC2626" }}>*</span>
           </label>
           <input
             name="phone"
             value={form.phone ?? ""}
             onChange={handleChange}
             className="w-full px-4 py-3 rounded-lg outline-none transition-colors"
-            style={errors.phone ? errorInputStyle : inputStyle}
+            style={{
+              ...inputStyle,
+              borderColor: errors.phone ? "#DC2626" : inputStyle.border,
+            }}
             placeholder="3001234567"
             inputMode="numeric"
           />
           {errors.phone && (
-            <p className="text-sm mt-1" style={{ color: "#DC2626" }}>
-              {errors.phone}
-            </p>
+            <p className="text-sm mt-1" style={{ color: "#DC2626" }}>{errors.phone}</p>
           )}
         </div>
       </div>
