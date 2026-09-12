@@ -8,6 +8,7 @@ import FormSection from "./FormSection";
 import { FORM_ID } from "./FormLayout";
 import type { Owner } from "@features/owner";
 import type { CreatePropertyInput, PropertyMedia } from "@features/properties";
+import { PROPERTY_TYPE_OPTIONS } from "@features/properties";
 
 interface PropertyFormProps {
   initialData?: CreatePropertyInput & { property_id?: string };
@@ -223,9 +224,9 @@ export default function PropertyForm({
               }}
             >
               <option value="">Seleccionar tipo</option>
-              <option value="casa">Casa Fincas</option>
-              <option value="lote">Lotes</option>
-              <option value="cabana">Cabañas</option>
+              {PROPERTY_TYPE_OPTIONS.map(({ value, label }) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
             </select>
             {errors.type && (
               <p className="mt-1 text-sm" style={{ color: "#DC2626" }}>{errors.type}</p>

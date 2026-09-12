@@ -3,21 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { PropertyWithMedia } from "@features/properties";
+import { PROPERTY_TYPES } from "@features/properties";
 
 interface PropertyCardProps {
   property: PropertyWithMedia;
 }
 
-const typeConfig: Record<string, { label: string; color: string }> = {
-  casa: { label: "Casa Finca", color: "#059669" },
-  lote: { label: "Lote", color: "#D97706" },
-  cabana: { label: "Cabaña", color: "#7C3AED" },
-};
-
 export default function PropertyCard({ property }: PropertyCardProps) {
   const cover = property.media?.find((m) => m.cover_image) ?? property.media?.[0];
   const imageUrl = cover?.file_url ?? null;
-  const config = typeConfig[property.type ?? ""] ?? { label: "Propiedad", color: "var(--primary)" };
+  const config = PROPERTY_TYPES[property.type as keyof typeof PROPERTY_TYPES] ?? { label: "Propiedad", color: "var(--primary)" };
 
   return (
     <Link

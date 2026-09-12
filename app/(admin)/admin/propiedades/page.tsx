@@ -6,6 +6,7 @@ import { createBrowserClient } from "@shared/utils/supabase";
 import { PropertyList, ConfirmDialog } from "@features/admin";
 import { Button } from "@shared/components/ui";
 import type { PropertyWithMedia } from "@features/properties";
+import { PROPERTY_TYPE_OPTIONS } from "@features/properties";
 
 export default function PropiedadesPage() {
   const supabase = createBrowserClient();
@@ -146,9 +147,7 @@ export default function PropiedadesPage() {
       <div className="flex gap-3 flex-wrap">
         {[
           { value: "", label: "Todos" },
-          { value: "casa", label: "Casa Fincas" },
-          { value: "lote", label: "Lotes" },
-          { value: "cabana", label: "Cabañas" },
+          ...PROPERTY_TYPE_OPTIONS,
         ].map(({ value, label }) => (
           <button
             key={value}
