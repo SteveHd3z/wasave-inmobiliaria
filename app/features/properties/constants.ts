@@ -3,6 +3,7 @@ export const PROPERTY_TYPES = {
   lote: { label: "Lote", color: "#D97706" },
   cabana: { label: "Cabaña", color: "#7C3AED" },
   local: { label: "Local", color: "#2563EB" },
+  apartamento: { label: "Apartamento", color: "#0EA5E9" },
 } as const;
 
 export type PropertyType = keyof typeof PROPERTY_TYPES;

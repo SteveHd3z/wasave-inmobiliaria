@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@shared/components/ui";
+import ConfirmDialog from "./ConfirmDialog";
 
 interface MediaUploaderProps {
   files: File[];
@@ -23,12 +24,25 @@ export default function MediaUploader({
   coverSource,
 }: MediaUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [deleteTarget, setDeleteTarget] = useState<
+    { type: "existing"; id: string } | { type: "new"; index: number } | null
+  >(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       onFilesAdd(Array.from(e.target.files));
       e.target.value = "";
     }
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deleteTarget) return;
+    if (deleteTarget.type === "existing") {
+      onRemoveExisting(deleteTarget.id);
+    } else {
+      onRemoveNew(deleteTarget.index);
+    }
+    setDeleteTarget(null);
   };
 
   return (
@@ -50,7 +64,7 @@ export default function MediaUploader({
         />
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {existingMedia.map((media) => {
           const isCover =
             coverSource?.type === "existing" && coverSource.id === media.media_id;
@@ -66,7 +80,7 @@ export default function MediaUploader({
                 alt="Media"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+              <div className="absolute inset-0 bg-black/50 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-2 p-2">
                 <button
                   type="button"
                   onClick={() =>
@@ -75,14 +89,14 @@ export default function MediaUploader({
                       null
                     )
                   }
-                  className="px-2 py-1 text-xs rounded bg-white text-black font-medium"
+                  className="w-full sm:w-auto px-4 py-2 sm:px-2 sm:py-1 text-sm sm:text-xs rounded bg-white text-black font-medium"
                 >
                   {isCover ? "Quitar cover" : "Portada"}
                 </button>
                 <button
                   type="button"
-                  onClick={() => onRemoveExisting(media.media_id)}
-                  className="px-2 py-1 text-xs rounded bg-red-500 text-white font-medium"
+                  onClick={() => setDeleteTarget({ type: "existing", id: media.media_id })}
+                  className="w-full sm:w-auto px-4 py-2 sm:px-2 sm:py-1 text-sm sm:text-xs rounded bg-red-500 text-white font-medium"
                 >
                   Eliminar
                 </button>
@@ -114,18 +128,18 @@ export default function MediaUploader({
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img src={url} alt={file.name} className="w-full h-full object-cover" />
               )}
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+              <div className="absolute inset-0 bg-black/50 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-2 p-2">
                 <button
                   type="button"
                   onClick={() => onSetCover(null, isCover ? null : index)}
-                  className="px-2 py-1 text-xs rounded bg-white text-black font-medium"
+                  className="w-full sm:w-auto px-4 py-2 sm:px-2 sm:py-1 text-sm sm:text-xs rounded bg-white text-black font-medium"
                 >
                   {isCover ? "Quitar cover" : "Portada"}
                 </button>
                 <button
                   type="button"
-                  onClick={() => onRemoveNew(index)}
-                  className="px-2 py-1 text-xs rounded bg-red-500 text-white font-medium"
+                  onClick={() => setDeleteTarget({ type: "new", index })}
+                  className="w-full sm:w-auto px-4 py-2 sm:px-2 sm:py-1 text-sm sm:text-xs rounded bg-red-500 text-white font-medium"
                 >
                   Eliminar
                 </button>
@@ -142,6 +156,14 @@ export default function MediaUploader({
           );
         })}
       </div>
+
+      <ConfirmDialog
+        isOpen={deleteTarget !== null}
+        title="Eliminar imagen"
+        message="¿Estás seguro de que deseas eliminar esta imagen? Esta acción no se puede deshacer."
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
