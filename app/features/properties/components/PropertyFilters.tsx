@@ -26,7 +26,7 @@ const filters = [
 
 export default function PropertyFilters({ selected, onChange, counts }: PropertyFiltersProps) {
   return (
-    <div className="flex gap-3 flex-wrap justify-center mb-10">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:gap-3 lg:flex-wrap lg:justify-center gap-3 mb-10">
       {filters.map((f) => {
         const isActive = selected === f.value;
         const count = counts?.[f.value];
@@ -35,7 +35,7 @@ export default function PropertyFilters({ selected, onChange, counts }: Property
           <button
             key={f.value}
             onClick={() => onChange(f.value)}
-            className="group relative flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
+            className="group relative flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all duration-300"
             style={{
               backgroundColor: isActive ? "var(--primary)" : "var(--surface)",
               color: isActive ? "white" : "var(--foreground)",
