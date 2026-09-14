@@ -3,33 +3,33 @@ import { WHATSAPP_LINK } from "@shared/constants";
 
 export const PROPIEDADES_RESIDENCIALES: Propiedad[] = [
   {
-    titulo: "Lote",
+    titulo: "Lotes",
     descripcion: "Terrenos urbanos y suburbanos ideales para construir su vivienda o proyecto inmobiliario.",
     icono: "🏗️",
     imagen: "/images/lote.jpg",
     slug: "lote",
   },
   {
-    titulo: "Casa Finca",
+    titulo: "Casa Fincas",
     descripcion: "Propiedades campestres con zonas verdes, perfectas para descanso y recreación.",
     icono: "🏡",
     imagen: "/images/casafinca.jpg",
     slug: "casa",
   },
   {
-    titulo: "Cabaña",
+    titulo: "Cabañas",
     descripcion: "Acogedoras cabañas en entornos naturales, ideales para invertir o disfrutar en familia.",
     icono: "🪵",
     imagen: "/images/cabañas.jpg",
     slug: "cabana",
   },
-  {
-    titulo: "Local",
-    descripcion: "Espacios comerciales estratégicos para iniciar o expandir su negocio.",
-    icono: "🏪",
-    imagen: "/images/local.jpg",
-    slug: "local",
-  },
+  // {
+  //   titulo: "Local",
+  //   descripcion: "Espacios comerciales estratégicos para iniciar o expandir su negocio.",
+  //   icono: "🏪",
+  //   imagen: "/images/local.jpg",
+  //   slug: "local",
+  // },
 ];
 
 export const COMPRA_VENTA_WHATSAPP_LINK = `${WHATSAPP_LINK}?text=${encodeURIComponent("Hola, quiero información sobre propiedades residenciales")}`;
