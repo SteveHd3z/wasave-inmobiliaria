@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { formatCop, parseCopInput } from "@shared/utils";
+import { parseCopInput } from "@shared/utils";
 
 interface CurrencyInputProps {
   name: string;
@@ -27,7 +27,10 @@ export default function CurrencyInput({
   const displayValue = isFocused
     ? localDisplay ?? ""
     : value != null
-      ? formatCop(value)
+      ? new Intl.NumberFormat("es-CO", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(value)
       : "";
 
   const handleFocus = useCallback(() => {
