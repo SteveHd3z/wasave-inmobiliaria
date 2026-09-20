@@ -1,119 +1,162 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { SectionHeader } from "@shared/components/ui";
 import { useTheme } from "@shared/hooks";
 import { CONTACT_INFO } from "@shared/constants";
 import { REPRESENTANTE_DATA } from "../constants";
 
+const CARROUSEL_IMAGES = [
+  "/images/chicago.jpg",
+  "/images/carrousel-img/chicago1.jpg",
+  "/images/carrousel-img/libertad.jpg",
+  "/images/carrousel-img/medellin.jpg",
+];
+const CARROUSEL_INTERVAL_MS = 10000;
+
 export default function RepresentanteLegalSection() {
   const [showLicencia, setShowLicencia] = useState(false);
+  const [current, setCurrent] = useState(0);
   const { theme } = useTheme();
+
+  useEffect(() => {
+    const timer = setInterval(
+      () => setCurrent((prev) => (prev + 1) % CARROUSEL_IMAGES.length),
+      CARROUSEL_INTERVAL_MS
+    );
+    return () => clearInterval(timer);
+  }, [current]);
 
   return (
     <section
       id="representante"
-      className="relative py-20 px-4 overflow-hidden"
-      style={{
-        backgroundColor:
-          theme === "dark" ? "var(--background)" : "var(--surface)",
-      }}
+      className="relative overflow-hidden min-h-[640px] md:min-h-[720px] flex items-end justify-center md:justify-end px-4 py-10 md:px-10 md:pt-14 md:pb-4"
+      style={{ backgroundColor: "var(--background)" }}
     >
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/images/chicago.jpg"
-          alt="Chicago skyline"
-          fill
-          style={{ opacity: theme === "dark" ? 0.9 : 0.9 }}
-          priority
-        />
+      <div className="absolute inset-0 z-0" aria-hidden="true">
+        {CARROUSEL_IMAGES.map((src, idx) => (
+          <div
+            key={src}
+            className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+            style={{ opacity: idx === current ? 1 : 0 }}
+          >
+            <Image
+              src={src}
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover blur-2xl scale-110"
+            />
+            <Image
+              src={src}
+              alt=""
+              fill
+              sizes="100vw"
+              priority={idx === 0}
+              className="object-contain"
+            />
+          </div>
+        ))}
         <div
           className="absolute inset-0"
           style={{
             background:
-              theme === "dark"
-                ? "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 100%)"
-                : "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.1) 100%)",
+              "linear-gradient(to top left, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0.05) 100%)",
           }}
         />
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto">
-        <SectionHeader label="Nosotros" title="Representante Legal" />
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 md:left-10 md:translate-x-0 z-10 flex gap-2">
+        {CARROUSEL_IMAGES.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => setCurrent(idx)}
+            aria-label={`Ir a la imagen ${idx + 1}`}
+            className="h-2 rounded-full transition-all duration-300 cursor-pointer"
+            style={{
+              width: idx === current ? 28 : 8,
+              backgroundColor:
+                idx === current ? "var(--primary)" : "rgba(255,255,255,0.6)",
+            }}
+          />
+        ))}
+      </div>
 
-        <div
-          className="rounded-2xl p-8 md:p-12 border"
-          style={{
-            backgroundColor: "var(--surface)",
-            borderColor: "var(--border-color)",
-          }}
+      <div
+        className="relative z-10 w-full max-w-3xl rounded-2xl p-6 md:p-8 border shadow-2xl backdrop-blur-md mb-8 md:mb-0"
+        style={{
+          backgroundColor:
+            theme === "dark" ? "rgba(17,17,17,0.82)" : "rgba(255,255,255,0.88)",
+          borderColor: "var(--border-color)",
+        }}
+      >
+        <p
+          className="text-xs font-semibold uppercase tracking-[0.2em] mb-4"
+          style={{ color: "var(--primary)" }}
         >
-          <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
-            <div className="relative w-40 h-52 rounded-2xl overflow-hidden shrink-0 shadow-lg"
-              style={{
-                border: "3px solid var(--primary)",
-              }}
+          Nosotros · Representante Legal
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 items-center sm:items-start">
+          <div
+            className="relative w-28 h-36 rounded-xl overflow-hidden shrink-0 shadow-lg"
+            style={{ border: "3px solid var(--primary)" }}
+          >
+            <Image
+              src={REPRESENTANTE_DATA.imagen}
+              alt={REPRESENTANTE_DATA.nombre}
+              fill
+              className="object-contain"
+            />
+          </div>
+
+          <div className="text-center sm:text-left flex-1">
+            <h3
+              className="text-xl md:text-2xl font-bold mb-1"
+              style={{ color: "var(--foreground)" }}
             >
-              <Image
-                src={REPRESENTANTE_DATA.imagen}
-                alt={REPRESENTANTE_DATA.nombre}
-                fill
-                className="object-contain"
-              />
-            </div>
+              {REPRESENTANTE_DATA.nombre}
+            </h3>
+            <p
+              className="font-semibold mb-3"
+              style={{ color: "var(--primary)" }}
+            >
+              {REPRESENTANTE_DATA.cargo}
+            </p>
 
-            <div className="text-center md:text-left flex-1">
-              <h3
-                className="text-2xl font-bold mb-1"
-                style={{ color: "var(--foreground)" }}
-              >
-                {REPRESENTANTE_DATA.nombre}
-              </h3>
-              <p
-                className="font-semibold mb-4"
-                style={{ color: "var(--primary)" }}
-              >
-                {REPRESENTANTE_DATA.cargo}
-              </p>
-
-              <div className="space-y-2 leading-relaxed" style={{ color: "var(--muted)" }}>
-                {REPRESENTANTE_DATA.biografia.map((parrafo, idx) => (
-                  <p key={idx}>{parrafo}</p>
-                ))}
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
-                <a
-                  href={`tel:${CONTACT_INFO.phoneLink}`}
-                  className="px-6 py-2.5 rounded-full font-semibold text-sm transition-all hover:opacity-90"
-                  style={{ backgroundColor: "var(--primary)", color: "#ffffff" }}
-                >
-                  📞 {CONTACT_INFO.phone}
-                </a>
-                <a
-                  href={`mailto:${CONTACT_INFO.email}`}
-                  className="px-6 py-2.5 rounded-full font-semibold text-sm border transition-all hover:opacity-80"
-                  style={{
-                    borderColor: "var(--primary)",
-                    color: "var(--primary)",
-                  }}
-                >
-                  ✉️ Enviar Email
-                </a>
-                <button
-                  onClick={() => setShowLicencia(true)}
-                  className="px-6 py-2.5 rounded-full font-semibold text-sm border transition-all hover:opacity-80 cursor-pointer"
-                  style={{
-                    borderColor: "var(--primary)",
-                    color: "var(--primary)",
-                  }}
-                >
-                  📜 Ver Licencia
-                </button>
-              </div>
+            <div
+              className="space-y-2 text-sm leading-relaxed"
+              style={{ color: "var(--muted)" }}
+            >
+              {REPRESENTANTE_DATA.biografia.map((parrafo, idx) => (
+                <p key={idx}>{parrafo}</p>
+              ))}
             </div>
           </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-3 justify-center sm:justify-start">
+          <a
+            href={`tel:${CONTACT_INFO.phoneLink}`}
+            className="px-5 py-2.5 rounded-full font-semibold text-sm transition-all hover:opacity-90"
+            style={{ backgroundColor: "var(--primary)", color: "#ffffff" }}
+          >
+            📞 {CONTACT_INFO.phone}
+          </a>
+          <a
+            href={`mailto:${CONTACT_INFO.email}`}
+            className="px-5 py-2.5 rounded-full font-semibold text-sm border transition-all hover:opacity-80"
+            style={{ borderColor: "var(--primary)", color: "var(--primary)" }}
+          >
+            ✉️ Enviar Email
+          </a>
+          <button
+            onClick={() => setShowLicencia(true)}
+            className="px-5 py-2.5 rounded-full font-semibold text-sm border transition-all hover:opacity-80 cursor-pointer"
+            style={{ borderColor: "var(--primary)", color: "var(--primary)" }}
+          >
+            📜 Ver Licencia
+          </button>
         </div>
       </div>
 
