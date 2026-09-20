@@ -33,20 +33,20 @@ export default function CertificadosPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <CertificateCard
-          icon="📋"
-          title="Ventanilla Unica de la SNR"
-          description="Plataforma oficial para la compra y consulta de certificados de libertad y tradicion de inmuebles registrados en Colombia. Acceda desde la ventanilla virtual de la Superintendencia de Notariado y Registro."
-          url="https://ventanilla.supernotariado.gov.co/"
-          buttonLabel="Ir a la Ventanilla SNR"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">        
         <CertificateCard
           icon="🏛️"
           title="Superintendencia de Notariado y Registro"
           description="Sitio institucional de la SNR donde encontrara informacion sobre requisitos, tarifas y procedimientos para la expedicion de certificados de tradicion y libertad de inmuebles."
-          url="https://www.supernotariado.gov.co/"
-          buttonLabel="Visitar sitio de la SNR"
+          url="https://certificados.supernotariado.gov.co/certificado"
+          buttonLabel="Descarga de Certificado"
+        />
+        <CertificateCard
+          icon="🏛️"
+          title="Consulta de CTL"
+          description="Si ya realizó el pago del certificado y no lo ha recibido, ingrese directamente a esta opción."
+          url="https://certificados.supernotariado.gov.co/certificado/external/validation/recover-certificate.snr"
+          buttonLabel="Recuperar el Certificado"
         />
       </div>
 
@@ -74,45 +74,13 @@ export default function CertificadosPage() {
       </div>
 
       <div
-        className="rounded-2xl p-6"
+        className="rounded-2xl p-6 items-center"
         style={{
           backgroundColor: "var(--surface)",
           border: "1px solid var(--border-color)",
         }}
-      >
-        <h2 className="text-lg font-semibold mb-4" style={{ color: "var(--foreground)" }}>
-          Informacion de contacto
-        </h2>
-        <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
-          Si requiere asistencia personalizada con la compra o consulta de certificados, no dude en
-          contactarnos.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div>
-            <p className="text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>
-              Telefono
-            </p>
-            <p className="text-sm font-medium" style={{ color: "var(--foreground)" }}>
-              +57 (601) 742 8973
-            </p>
-          </div>
-          <div>
-            <p className="text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>
-              WhatsApp
-            </p>
-            <p className="text-sm font-medium" style={{ color: "var(--foreground)" }}>
-              +57 311 456 7890
-            </p>
-          </div>
-          <div>
-            <p className="text-xs font-medium mb-1" style={{ color: "var(--muted)" }}>
-              Email
-            </p>
-            <p className="text-sm font-medium" style={{ color: "var(--foreground)" }}>
-              contacto@wasave.co
-            </p>
-          </div>
-        </div>
+      > 
+      * Sección implementada para gestión interna de Wasave Inmobiliaria       
       </div>
     </div>
   );
