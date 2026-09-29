@@ -5,13 +5,11 @@ import { formatAppointmentDateTime } from "@shared/utils";
 
 interface AppointmentConfirmationProps {
   data: AppointmentFormData;
-  whatsappLink: string;
   onNewAppointment: () => void;
 }
 
 export default function AppointmentConfirmation({
   data,
-  whatsappLink,
   onNewAppointment,
 }: AppointmentConfirmationProps) {
   const visitDate = formatAppointmentDateTime(data.visit_date);
@@ -91,19 +89,6 @@ export default function AppointmentConfirmation({
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
-        <a
-          href={whatsappLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-5 py-2.5 text-sm rounded-full font-semibold transition-all hover:opacity-90"
-          style={{
-            backgroundColor: "#25D366",
-            color: "white",
-            border: "none",
-          }}
-        >
-          Notificar por WhatsApp
-        </a>
         <button
           onClick={onNewAppointment}
           className="px-5 py-2.5 text-sm rounded-full font-semibold transition-all hover:opacity-90"

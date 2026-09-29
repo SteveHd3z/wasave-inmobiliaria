@@ -5,14 +5,11 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Header, Footer, WhatsAppButton } from "@shared/components/layout";
 import { createBrowserClient } from "@shared/utils/supabase";
-import { datetimeLocalToISO } from "@shared/utils";
 import { PropertyGallery } from "@features/properties";
 import { AppointmentForm, AppointmentConfirmation } from "@features/appointments";
 import { createAppointmentAction } from "@features/appointments/actions";
-import { generateWhatsAppMessage, getWhatsAppLink } from "@features/notifications";
 import type { AppointmentFormData } from "@features/appointments";
 import type { PropertyWithMedia } from "@features/properties";
-import type { Client } from "@/app/features/client";
 
 export default function PropertyDetailPage() {
   const supabase = createBrowserClient();
@@ -24,7 +21,6 @@ export default function PropertyDetailPage() {
   const [submitting, setSubmitting] = useState(false);
   const [confirmation, setConfirmation] = useState<{
     data: AppointmentFormData;
-    whatsappLink: string;
   } | null>(null);
 
   useEffect(() => {
@@ -66,32 +62,7 @@ export default function PropertyDetailPage() {
       return;
     }
 
-    const clientForMessage: Client = {
-      client_id: result.data.clientId,
-      name: formData.name,
-      last_name: formData.last_name || null,
-      document_id: formData.document_id || null,
-      email: formData.email,
-      phone: formData.phone,
-    };
-
-    const message = generateWhatsAppMessage({
-      appointment: {
-        appointment_id: result.data.appointmentId,
-        visit_date: datetimeLocalToISO(formData.visit_date),
-        status: "pending",
-        observations: formData.observations || null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        client_id: result.data.clientId,
-      },
-      client: clientForMessage,
-      action: "created",
-    });
-
-    const whatsappLink = getWhatsAppLink(formData.phone, message);
-
-    setConfirmation({ data: formData, whatsappLink });
+    setConfirmation({ data: formData });
     setSubmitting(false);
   };
 
@@ -271,7 +242,6 @@ export default function PropertyDetailPage() {
                 {confirmation ? (
                   <AppointmentConfirmation
                     data={confirmation.data}
-                    whatsappLink={confirmation.whatsappLink}
                     onNewAppointment={handleNewAppointment}
                   />
                 ) : (
