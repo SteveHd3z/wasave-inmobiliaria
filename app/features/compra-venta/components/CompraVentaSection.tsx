@@ -63,7 +63,7 @@ export default function CompraVentaSection() {
                 </p>
 
                 <Link
-                  href={`/propiedades?type=${prop.slug}`}
+                  href={`/propiedades?type=${encodeURIComponent(prop.slug)}`}
                   className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 hover:gap-3 hover:opacity-90"
                   style={{ backgroundColor: "var(--primary)", color: "#ffffff" }}
                 >

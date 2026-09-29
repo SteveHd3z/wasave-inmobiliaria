@@ -1,5 +1,5 @@
 export const PROPERTY_TYPES = {
-  casa: { label: "Casa Finca", color: "#059669" },
+  "casa finca": { label: "Casa Finca", color: "#059669" },
   lote: { label: "Lote", color: "#D97706" },
   cabana: { label: "Cabaña", color: "#7C3AED" },
   local: { label: "Local", color: "#2563EB" },

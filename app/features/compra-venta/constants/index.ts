@@ -14,7 +14,7 @@ export const PROPIEDADES_RESIDENCIALES: Propiedad[] = [
     descripcion: "Propiedades campestres con zonas verdes, perfectas para descanso y recreación.",
     icono: "🏡",
     imagen: "/images/casafinca.jpg",
-    slug: "casa",
+    slug: "casa finca",
   },
   {
     titulo: "Cabañas",
