@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import { isVideoUrl } from "@shared/utils";
 import type { PropertyMedia } from "@features/properties";
 
 interface PropertyGalleryProps {
@@ -9,7 +10,7 @@ interface PropertyGalleryProps {
   title: string;
 }
 
-const isVideo = (url: string) => /\.(mp4|webm)$/i.test(url);
+const isVideo = isVideoUrl;
 
 export default function PropertyGallery({ media, title }: PropertyGalleryProps) {
   const sorted = [...media].sort((a, b) => {
@@ -134,12 +135,31 @@ export default function PropertyGallery({ media, title }: PropertyGalleryProps) 
                 }}
               >
                 {isVideo(item.file_url) ? (
-                  <div
-                    className="w-full h-full flex items-center justify-center"
-                    style={{ backgroundColor: "var(--background)" }}
-                  >
-                    <span style={{ color: "var(--muted)" }}>▶</span>
-                  </div>
+                  <>
+                    {/* #t=0.1 muestra el primer fotograma como miniatura */}
+                    <video
+                      src={`${item.file_url}#t=0.1`}
+                      preload="metadata"
+                      muted
+                      playsInline
+                      tabIndex={-1}
+                      aria-hidden="true"
+                      className="w-full h-full object-cover pointer-events-none"
+                      style={{ backgroundColor: "var(--background)" }}
+                    />
+                    <span
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                      aria-hidden="true"
+                    >
+                      <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black/60 text-white text-xs pl-0.5">
+                        ▶
+                      </span>
+                    </span>
+                    <span className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded text-[10px] font-medium text-white bg-black/70">
+                      Video
+                    </span>
+                    <span className="sr-only">Video {idx + 1}</span>
+                  </>
                 ) : (
                   <Image
                     src={item.file_url}
