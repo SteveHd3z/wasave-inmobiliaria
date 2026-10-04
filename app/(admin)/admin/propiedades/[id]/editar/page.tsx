@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createBrowserClient } from "@shared/utils/supabase";
 import { validateMediaFiles } from "@shared/utils";
-import { PropertyForm, FormLayout } from "@features/admin";
+import {
+  PropertyForm,
+  FormLayout,
+  UploadProgressOverlay,
+  uploadPropertyMedia,
+  type SaveProgress,
+} from "@features/admin";
 import type { CreatePropertyInput, PropertyMedia } from "@features/properties";
 
 interface PropertyRow {
@@ -28,6 +34,7 @@ export default function EditarPropiedadPage() {
   const [media, setMedia] = useState<PropertyMedia[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [progress, setProgress] = useState<SaveProgress | null>(null);
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -67,6 +74,8 @@ export default function EditarPropiedadPage() {
       return;
     }
 
+    setProgress({ phase: "saving", percent: 0, current: 0, total: files.length, fileName: "" });
+
     const { error: updateError } = await supabase
       .from("property")
       .update({
@@ -83,6 +92,7 @@ export default function EditarPropiedadPage() {
 
     if (updateError) {
       console.error("Error al actualizar propiedad:", updateError);
+      setProgress(null);
       alert("Error al guardar los cambios de la propiedad");
       setSaving(false);
       return;
@@ -109,6 +119,7 @@ export default function EditarPropiedadPage() {
 
       if (resetError) {
         console.error("Error al limpiar portada anterior:", resetError);
+        setProgress(null);
         alert("No se pudo actualizar la portada");
         setSaving(false);
         return;
@@ -122,6 +133,7 @@ export default function EditarPropiedadPage() {
 
         if (coverError) {
           console.error("Error al definir portada:", coverError);
+          setProgress(null);
           alert("No se pudo actualizar la portada");
           setSaving(false);
           return;
@@ -132,45 +144,16 @@ export default function EditarPropiedadPage() {
     const remainingMedia = media.filter((m) => !removedMediaIds.includes(m.media_id));
     const nextOrder =
       Math.max(-1, ...remainingMedia.map((m) => m.display_order ?? 0)) + 1;
-    let uploadErrors = 0;
+    const uploadErrors = await uploadPropertyMedia({
+      supabase,
+      propertyId: id,
+      files,
+      coverFile,
+      startOrder: nextOrder,
+      onProgress: (p) => setProgress({ phase: "uploading", ...p }),
+    });
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const ext = file.name.split(".").pop();
-      const path = `${id}/${Date.now()}-${i}.${ext}`;
-
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("property-media")
-        .upload(path, file, {
-          contentType: file.type,
-          upsert: false,
-        });
-
-      if (uploadError) {
-        console.error("Error al subir archivo:", file.name, uploadError);
-        uploadErrors++;
-        continue;
-      }
-
-      if (uploadData) {
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("property-media").getPublicUrl(uploadData.path);
-
-        const isCover = coverFile === file;
-        const { error: insertError } = await supabase.from("property_media").insert({
-          file_url: publicUrl,
-          cover_image: isCover,
-          display_order: nextOrder + i,
-          property_id: id,
-        });
-
-        if (insertError) {
-          console.error("Error al guardar registro de media:", insertError);
-          uploadErrors++;
-        }
-      }
-    }
+    setProgress({ phase: "finishing", percent: 100, current: files.length, total: files.length, fileName: "" });
 
     if (uploadErrors > 0) {
       alert(`Cambios guardados, pero hubo errores al subir ${uploadErrors} archivo(s). Revisa la consola para más detalles.`);
@@ -199,6 +182,7 @@ export default function EditarPropiedadPage() {
   }
 
   return (
+    <>
     <FormLayout
       title="Editar Propiedad"
       subtitle={`Modificando: ${property.title}`}
@@ -226,5 +210,7 @@ export default function EditarPropiedadPage() {
         loading={saving}
       />
     </FormLayout>
+    <UploadProgressOverlay progress={progress} />
+    </>
   );
 }

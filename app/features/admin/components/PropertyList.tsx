@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@shared/components/ui";
-import { formatCop } from "@shared/utils";
+import { formatCop, isVideoUrl } from "@shared/utils";
 import type { PropertyWithMedia } from "@features/properties";
 
 interface PropertyListProps {
@@ -55,7 +55,9 @@ export default function PropertyList({ properties, onDelete }: PropertyListProps
         </thead>
         <tbody>
           {properties.map((prop) => {
-            const cover = prop.media?.find((m) => m.cover_image) ?? prop.media?.[0];
+            const cover =
+              prop.media?.find((m) => m.cover_image && !isVideoUrl(m.file_url)) ??
+              prop.media?.find((m) => !isVideoUrl(m.file_url));
             return (
               <tr key={prop.property_id} style={{ borderBottom: "1px solid var(--border-color)" }}>
                 <td className="py-3 px-2">

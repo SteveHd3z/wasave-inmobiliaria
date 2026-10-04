@@ -63,7 +63,77 @@ const ALLOWED_MEDIA_TYPES = [
   "video/webm",
 ];
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024;
+const MB = 1024 * 1024;
+
+// El limite por archivo (50 MB) debe coincidir con "File size limit" del bucket
+// property-media y con el limite global de Supabase (Storage > Settings).
+// El resto son limites de negocio: ajustelos aqui si cambian las necesidades.
+export const MEDIA_LIMITS = {
+  maxFileSize: 50 * MB,
+  maxFiles: 20,
+  maxVideos: 5,
+  maxBatchSize: 200 * MB,
+} as const;
+
+const MAX_FILE_SIZE = MEDIA_LIMITS.maxFileSize;
+
+export function isVideoUrl(url: string): boolean {
+  return /\.(mp4|webm)(\?.*)?$/i.test(url);
+}
+
+export function formatFileSize(bytes: number): string {
+  if (bytes >= MB) return `${(bytes / MB).toFixed(1)} MB`;
+  return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+}
+
+/**
+ * Valida los archivos que se intentan agregar contra tipo, tamano y cantidad.
+ * `existingUrls` son los archivos que la propiedad ya conserva (para contar el total).
+ * Devuelve los archivos aceptados y un mensaje por cada rechazo.
+ */
+export function validateMediaSelection(
+  newFiles: File[],
+  currentNewFiles: File[],
+  existingUrls: string[]
+): { accepted: File[]; errors: string[] } {
+  const accepted: File[] = [];
+  const errors: string[] = [];
+
+  let count = existingUrls.length + currentNewFiles.length;
+  let videos =
+    existingUrls.filter(isVideoUrl).length +
+    currentNewFiles.filter((f) => f.type.startsWith("video/")).length;
+  let batchSize = currentNewFiles.reduce((sum, f) => sum + f.size, 0);
+
+  for (const file of newFiles) {
+    const single = validateMediaFile(file);
+    if (!single.valid) {
+      errors.push(single.error!);
+      continue;
+    }
+    if (count >= MEDIA_LIMITS.maxFiles) {
+      errors.push(`"${file.name}" no se agrego: maximo ${MEDIA_LIMITS.maxFiles} archivos por propiedad.`);
+      continue;
+    }
+    const isVideo = file.type.startsWith("video/");
+    if (isVideo && videos >= MEDIA_LIMITS.maxVideos) {
+      errors.push(`"${file.name}" no se agrego: maximo ${MEDIA_LIMITS.maxVideos} videos por propiedad.`);
+      continue;
+    }
+    if (batchSize + file.size > MEDIA_LIMITS.maxBatchSize) {
+      errors.push(
+        `"${file.name}" no se agrego: los archivos nuevos no pueden superar ${MEDIA_LIMITS.maxBatchSize / MB} MB por guardado. Guarde y luego agregue mas.`
+      );
+      continue;
+    }
+    accepted.push(file);
+    count++;
+    if (isVideo) videos++;
+    batchSize += file.size;
+  }
+
+  return { accepted, errors };
+}
 
 export function validateMediaFile(file: File): { valid: boolean; error?: string } {
   if (file.size > MAX_FILE_SIZE) {

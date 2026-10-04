@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@shared/utils/supabase";
 import { CurrencyInput } from "@shared/components/ui";
+import { validateMediaSelection, MEDIA_LIMITS } from "@shared/utils";
 import MediaUploader from "./MediaUploader";
 import FormSection from "./FormSection";
 import { FORM_ID } from "./FormLayout";
@@ -97,10 +98,16 @@ export default function PropertyForm({
   };
 
   const handleFilesAdd = (newFiles: File[]) => {
-    setFiles((prev) => [...prev, ...newFiles]);
-    if (errors.media) {
-      setErrors((prev) => ({ ...prev, media: undefined }));
-    }
+    const keptUrls = mediaList
+      .filter((m) => !removedMediaIds.includes(m.media_id))
+      .map((m) => m.file_url);
+    const { accepted, errors: rejected } = validateMediaSelection(newFiles, files, keptUrls);
+
+    if (accepted.length > 0) setFiles((prev) => [...prev, ...accepted]);
+    setErrors((prev) => ({
+      ...prev,
+      media: rejected.length > 0 ? rejected.join("\n") : undefined,
+    }));
   };
 
   const handleRemoveNew = (index: number) => {
@@ -414,8 +421,13 @@ export default function PropertyForm({
             onSetCover={handleSetCover}
             coverSource={coverSource}
           />
+          <p className="mt-2 text-xs" style={{ color: "var(--muted)" }}>
+            JPEG, PNG, WebP, MP4 o WebM. Hasta {MEDIA_LIMITS.maxFiles} archivos por propiedad
+            (maximo {MEDIA_LIMITS.maxVideos} videos), {MEDIA_LIMITS.maxFileSize / (1024 * 1024)} MB
+            por archivo y {MEDIA_LIMITS.maxBatchSize / (1024 * 1024)} MB en total por guardado.
+          </p>
           {errors.media && (
-            <p className="mt-2 text-sm" style={{ color: "#DC2626" }}>{errors.media}</p>
+            <p className="mt-2 text-sm whitespace-pre-line" style={{ color: "#DC2626" }}>{errors.media}</p>
           )}
         </div>
       </FormSection>

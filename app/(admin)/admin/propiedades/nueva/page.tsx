@@ -4,13 +4,20 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@shared/utils/supabase";
 import { validateMediaFiles } from "@shared/utils";
-import { PropertyForm, FormLayout } from "@features/admin";
+import {
+  PropertyForm,
+  FormLayout,
+  UploadProgressOverlay,
+  uploadPropertyMedia,
+  type SaveProgress,
+} from "@features/admin";
 import type { CreatePropertyInput } from "@features/properties";
 
 export default function NuevaPropiedadPage() {
   const supabase = createBrowserClient();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState<SaveProgress | null>(null);
 
   const handleSubmit = async (
     data: CreatePropertyInput,
@@ -25,6 +32,8 @@ export default function NuevaPropiedadPage() {
       setLoading(false);
       return;
     }
+
+    setProgress({ phase: "saving", percent: 0, current: 0, total: files.length, fileName: "" });
 
     const { data: property, error } = await supabase
       .from("property")
@@ -43,51 +52,24 @@ export default function NuevaPropiedadPage() {
 
     if (error || !property) {
       console.error("Error al crear propiedad:", error);
+      setProgress(null);
       alert("Error al crear la propiedad");
       setLoading(false);
       return;
     }
 
     const propertyId = (property as { property_id: string }).property_id;
-    let uploadErrors = 0;
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const ext = file.name.split(".").pop();
-      const path = `${propertyId}/${Date.now()}-${i}.${ext}`;
+    const uploadErrors = await uploadPropertyMedia({
+      supabase,
+      propertyId,
+      files,
+      coverFile,
+      startOrder: 0,
+      onProgress: (p) => setProgress({ phase: "uploading", ...p }),
+    });
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("property-media")
-        .upload(path, file, {
-          contentType: file.type,
-          upsert: false,
-        });
-
-      if (uploadError) {
-        console.error("Error al subir archivo:", file.name, uploadError);
-        uploadErrors++;
-        continue;
-      }
-
-      if (uploadData) {
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("property-media").getPublicUrl(uploadData.path);
-
-        const isCover = coverFile === file;
-        const { error: insertError } = await supabase.from("property_media").insert({
-          file_url: publicUrl,
-          cover_image: isCover,
-          display_order: i,
-          property_id: propertyId,
-        });
-
-        if (insertError) {
-          console.error("Error al guardar registro de media:", insertError);
-          uploadErrors++;
-        }
-      }
-    }
+    setProgress({ phase: "finishing", percent: 100, current: files.length, total: files.length, fileName: "" });
 
     if (uploadErrors > 0) {
       alert(`Propiedad creada, pero hubo errores al subir ${uploadErrors} archivo(s). Revisa la consola para más detalles.`);
@@ -97,17 +79,20 @@ export default function NuevaPropiedadPage() {
   };
 
   return (
-    <FormLayout
-      title="Nueva Propiedad"
-      subtitle="Publica una nueva propiedad con sus detalles y multimedia."
-      backHref="/admin/propiedades"
-      backLabel="Volver a propiedades"
-      cancelHref="/admin/propiedades"
-      loading={loading}
-      submitLabel="Publicar propiedad"
-      maxWidth="xl"
-    >
-      <PropertyForm onSubmit={handleSubmit} loading={loading} />
-    </FormLayout>
+    <>
+      <FormLayout
+        title="Nueva Propiedad"
+        subtitle="Publica una nueva propiedad con sus detalles y multimedia."
+        backHref="/admin/propiedades"
+        backLabel="Volver a propiedades"
+        cancelHref="/admin/propiedades"
+        loading={loading}
+        submitLabel="Publicar propiedad"
+        maxWidth="xl"
+      >
+        <PropertyForm onSubmit={handleSubmit} loading={loading} />
+      </FormLayout>
+      <UploadProgressOverlay progress={progress} />
+    </>
   );
 }

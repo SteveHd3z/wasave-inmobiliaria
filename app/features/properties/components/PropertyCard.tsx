@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { isVideoUrl } from "@shared/utils";
 import type { PropertyWithMedia } from "@features/properties";
 import { PROPERTY_TYPES } from "@features/properties";
 
@@ -10,7 +11,9 @@ interface PropertyCardProps {
 }
 
 export default function PropertyCard({ property }: PropertyCardProps) {
-  const cover = property.media?.find((m) => m.cover_image) ?? property.media?.[0];
+  const cover =
+    property.media?.find((m) => m.cover_image && !isVideoUrl(m.file_url)) ??
+    property.media?.find((m) => !isVideoUrl(m.file_url));
   const imageUrl = cover?.file_url ?? null;
   const config = PROPERTY_TYPES[property.type as keyof typeof PROPERTY_TYPES] ?? { label: "Propiedad", color: "var(--primary)" };
 

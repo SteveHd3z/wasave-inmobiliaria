@@ -17,3 +17,6 @@ export { default as CertificateCard } from "./components/CertificateCard";
 export { default as PageHeader } from "./components/PageHeader";
 export { default as FormLayout } from "./components/FormLayout";
 export { default as FormSection } from "./components/FormSection";
+export { default as UploadProgressOverlay } from "./components/UploadProgressOverlay";
+export type { SaveProgress } from "./components/UploadProgressOverlay";
+export { uploadPropertyMedia } from "./utils/uploadPropertyMedia";
