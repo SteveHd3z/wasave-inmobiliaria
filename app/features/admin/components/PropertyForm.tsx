@@ -13,7 +13,13 @@ import { PROPERTY_TYPE_OPTIONS } from "@features/properties";
 interface PropertyFormProps {
   initialData?: CreatePropertyInput & { property_id?: string };
   existingMedia?: PropertyMedia[];
-  onSubmit: (data: CreatePropertyInput, files: File[], coverFile: File | null, removedMediaIds: string[]) => Promise<void>;
+  onSubmit: (
+    data: CreatePropertyInput,
+    files: File[],
+    coverFile: File | null,
+    removedMediaIds: string[],
+    coverMediaId: string | null
+  ) => Promise<void>;
   loading?: boolean;
 }
 
@@ -53,7 +59,10 @@ export default function PropertyForm({
   const [removedMediaIds, setRemovedMediaIds] = useState<string[]>([]);
   const [coverSource, setCoverSource] = useState<
     { type: "existing"; id: string } | { type: "new"; index: number } | null
-  >(null);
+  >(() => {
+    const current = existingMedia.find((m) => m.cover_image);
+    return current ? { type: "existing", id: current.media_id } : null;
+  });
   const [mediaList, setMediaList] = useState(existingMedia);
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -171,9 +180,20 @@ export default function PropertyForm({
 
     if (!validate()) return;
 
-    const coverFile =
+    let coverFile =
       coverSource?.type === "new" ? files[coverSource.index] : null;
-    await onSubmit(form, files, coverFile, removedMediaIds);
+    let coverMediaId = coverSource?.type === "existing" ? coverSource.id : null;
+
+    // Sin portada elegida: la primera imagen disponible (existente o nueva) pasa a ser la portada.
+    if (!coverFile && !coverMediaId) {
+      const firstExisting = mediaList.find(
+        (m) => !removedMediaIds.includes(m.media_id) && !/\.(mp4|webm)$/i.test(m.file_url)
+      );
+      if (firstExisting) coverMediaId = firstExisting.media_id;
+      else coverFile = files.find((f) => f.type.startsWith("image/")) ?? null;
+    }
+
+    await onSubmit(form, files, coverFile, removedMediaIds, coverMediaId);
   };
 
   const inputStyle = {

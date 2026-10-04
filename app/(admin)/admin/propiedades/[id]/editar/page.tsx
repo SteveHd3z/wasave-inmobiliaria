@@ -55,7 +55,8 @@ export default function EditarPropiedadPage() {
     data: CreatePropertyInput,
     files: File[],
     coverFile: File | null,
-    removedMediaIds: string[]
+    removedMediaIds: string[],
+    coverMediaId: string | null
   ) => {
     setSaving(true);
 
@@ -66,7 +67,7 @@ export default function EditarPropiedadPage() {
       return;
     }
 
-    await supabase
+    const { error: updateError } = await supabase
       .from("property")
       .update({
         title: data.title,
@@ -80,6 +81,13 @@ export default function EditarPropiedadPage() {
       })
       .eq("property_id", id);
 
+    if (updateError) {
+      console.error("Error al actualizar propiedad:", updateError);
+      alert("Error al guardar los cambios de la propiedad");
+      setSaving(false);
+      return;
+    }
+
     if (removedMediaIds.length > 0) {
       const { error: deleteError } = await supabase
         .from("property_media")
@@ -92,6 +100,38 @@ export default function EditarPropiedadPage() {
       }
     }
 
+    // Una sola portada por propiedad: se limpia la anterior antes de marcar la nueva.
+    if (coverMediaId || coverFile) {
+      const { error: resetError } = await supabase
+        .from("property_media")
+        .update({ cover_image: false })
+        .eq("property_id", id);
+
+      if (resetError) {
+        console.error("Error al limpiar portada anterior:", resetError);
+        alert("No se pudo actualizar la portada");
+        setSaving(false);
+        return;
+      }
+
+      if (coverMediaId) {
+        const { error: coverError } = await supabase
+          .from("property_media")
+          .update({ cover_image: true })
+          .eq("media_id", coverMediaId);
+
+        if (coverError) {
+          console.error("Error al definir portada:", coverError);
+          alert("No se pudo actualizar la portada");
+          setSaving(false);
+          return;
+        }
+      }
+    }
+
+    const remainingMedia = media.filter((m) => !removedMediaIds.includes(m.media_id));
+    const nextOrder =
+      Math.max(-1, ...remainingMedia.map((m) => m.display_order ?? 0)) + 1;
     let uploadErrors = 0;
 
     for (let i = 0; i < files.length; i++) {
@@ -121,7 +161,7 @@ export default function EditarPropiedadPage() {
         const { error: insertError } = await supabase.from("property_media").insert({
           file_url: publicUrl,
           cover_image: isCover,
-          display_order: media.length + i,
+          display_order: nextOrder + i,
           property_id: id,
         });
 
